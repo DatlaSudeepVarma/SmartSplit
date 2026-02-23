@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     secret_key: str = "change-me"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24 * 7
-    cors_origins: str = "http://localhost:3000"
+    cors_origins: str = "*"
 
     @property
     def cors_origins_list(self) -> list[str]:

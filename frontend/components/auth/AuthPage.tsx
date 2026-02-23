@@ -18,10 +18,12 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
     const [showConfirmPass, setShowConfirmPass] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     useEffect(() => {
         setFormData({ name: '', email: '', password: '', confirmPassword: '' });
         setError('');
+        setSuccess('');
         setShowPass(false);
         setShowConfirmPass(false);
     }, [mode]);
@@ -30,6 +32,7 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setSuccess('');
 
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
         if (!emailRegex.test(formData.email)) {
@@ -44,8 +47,18 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
                 setLoading(false);
                 return;
             }
-            if (formData.password.length < 6) {
-                setError("Password must be at least 6 characters.");
+            if (formData.password.length < 8) {
+                setError("Password must be at least 8 characters.");
+                setLoading(false);
+                return;
+            }
+            if (!/[A-Z]/.test(formData.password)) {
+                setError("Password must contain at least one capital letter.");
+                setLoading(false);
+                return;
+            }
+            if (!/\d/.test(formData.password)) {
+                setError("Password must contain at least one number.");
                 setLoading(false);
                 return;
             }
@@ -54,7 +67,10 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
         try {
             if (mode === 'register') {
                 await api.register(formData.name, formData.email, formData.password);
-                router.push('/login');
+                setSuccess("Registered successfully! Redirecting to login...");
+                setTimeout(() => {
+                    router.push('/login');
+                }, 2000);
             } else {
                 const res = await api.login(formData.email, formData.password);
                 login(res.user, res.token);
@@ -64,7 +80,9 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
             const error = err as Error;
             setError(error.message);
         } finally {
-            setLoading(false);
+            if (mode !== 'register' || error) {
+                setLoading(false);
+            }
         }
     };
 
@@ -89,6 +107,12 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
                 {error && (
                     <div className="mb-8 p-4 bg-brand-orange/10 text-brand-orange rounded-2xl text-base font-medium flex items-center gap-3 animate-in fade-in slide-in-from-top-2 border border-brand-orange/20">
                         <X size={20} /> {error}
+                    </div>
+                )}
+
+                {success && (
+                    <div className="mb-8 p-4 bg-green-500/10 text-green-500 rounded-2xl text-base font-medium flex items-center gap-3 animate-in fade-in slide-in-from-top-2 border border-green-500/20">
+                        <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">✓</div> {success}
                     </div>
                 )}
 
