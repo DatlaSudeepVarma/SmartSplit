@@ -5,6 +5,7 @@ from alembic import context
 
 from app.core.config import settings
 from app.db.base import Base
+from app.models import User  # noqa
 
 config = context.config
 
