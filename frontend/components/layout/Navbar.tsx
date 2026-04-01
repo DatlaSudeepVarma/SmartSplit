@@ -4,6 +4,7 @@ import React, { useContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Moon, Sun, ArrowLeftRight, Calculator as CalcIcon } from 'lucide-react';
+import Image from 'next/image';
 import SmartSplitLogo from '../ui/SmartSplitLogo';
 import Button from '../ui/Button';
 import CalculatorModal from '../modals/CalculatorModal';
@@ -22,7 +23,7 @@ const Navbar = () => {
 
     return (
         <>
-            <motion.header 
+            <motion.header
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, type: 'spring', stiffness: 100 }}
@@ -32,11 +33,15 @@ const Navbar = () => {
                     <div className="px-5 sm:px-8 h-16 sm:h-20 flex justify-between items-center">
                         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => user ? router.push('/dashboard') : router.push('/')}>
                             <motion.div whileHover={{ rotate: 15, scale: 1.1 }}>
-                                <SmartSplitLogo />
+                                <Image
+                                    src="/SmartSplit-PNG.png"
+                                    alt="SmartSplit Logo"
+                                    width={140}
+                                    height={140}
+                                    className="object-contain"
+                                />
                             </motion.div>
-                            <span className="font-black text-2xl tracking-tight text-gray-900 dark:text-white hidden sm:block">
-                                SMART<span className="text-brand-green">SPLIT</span>
-                            </span>
+
                         </div>
 
                         <div className="flex items-center gap-3 sm:gap-6">
