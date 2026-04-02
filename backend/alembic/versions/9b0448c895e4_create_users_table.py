@@ -18,8 +18,20 @@ depends_on = None
 
 
 def upgrade() -> None:
-    pass
+    op.create_table(
+        "users",
+        sa.Column("id", sa.String(), nullable=False),
+        sa.Column("name", sa.String(), nullable=False),
+        sa.Column("email", sa.String(), nullable=False),
+        sa.Column("hashed_password", sa.String(), nullable=False),
+        sa.Column("monthly_salary", sa.Float(), nullable=True),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(op.f("ix_users_email"), "users", ["email"], unique=True)
+    op.create_index(op.f("ix_users_id"), "users", ["id"], unique=False)
 
 
 def downgrade() -> None:
-    pass
+    op.drop_index(op.f("ix_users_id"), table_name="users")
+    op.drop_index(op.f("ix_users_email"), table_name="users")
+    op.drop_table("users")
