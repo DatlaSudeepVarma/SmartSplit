@@ -38,6 +38,7 @@ const Loader = () => {
                             width={400}
                             height={400}
                             priority
+                            unoptimized
                             className="object-contain"
                         />
                         <motion.div
