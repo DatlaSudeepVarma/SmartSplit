@@ -3,6 +3,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Plane } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AuthContext, CurrencyContext } from '../../context/AppContext';
 import { api } from '../../lib/api';
 import { slugify } from '../../lib/slugify';
@@ -66,30 +67,60 @@ const TripsList = () => {
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {trips.map(trip => (
-                    <TripCard
-                        key={trip.id}
-                        trip={trip}
-                        userShare={shares[trip.id]}
-                        symbol={symbol}
-                        onClick={() => router.push(`/trips/${slugify(trip.name)}`)}
-                        onDelete={() => handleDelete(trip.id)}
-                        onEdit={() => {
-                            setEditingTrip(trip);
-                            setIsModalOpen(true);
-                        }}
-                    />
-                ))}
+            <motion.div 
+                layout 
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+                <AnimatePresence mode="popLayout">
+                    {trips.map((trip, index) => (
+                        <motion.div
+                            key={trip.id}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.5, delay: index % 3 * 0.1 }}
+                        >
+                            <TripCard
+                                trip={trip}
+                                userShare={shares[trip.id]}
+                                symbol={symbol}
+                                onClick={() => router.push(`/trips/${slugify(trip.name)}`)}
+                                onDelete={() => handleDelete(trip.id)}
+                                onEdit={() => {
+                                    setEditingTrip(trip);
+                                    setIsModalOpen(true);
+                                }}
+                            />
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+                
                 {trips.length === 0 && (
-                    <div className="col-span-full py-32 text-center">
-                        <div className="inline-flex p-6 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-400 mb-6">
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="col-span-full py-32 text-center"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.8, rotate: -10 }}
+                            animate={{ 
+                                scale: [1, 1.1, 1],
+                                rotate: [-10, 10, -10]
+                            }}
+                            transition={{ 
+                                duration: 4,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                            className="inline-flex p-6 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-400 mb-6"
+                        >
                             <Plane size={48} />
-                        </div>
+                        </motion.div>
                         <p className="text-xl text-gray-500 dark:text-gray-400"> No trips yet.</p>
-                    </div>
+                    </motion.div>
                 )}
-            </div>
+            </motion.div>
 
             <AddTripModal
                 isOpen={isModalOpen}
