@@ -7,10 +7,11 @@ import { motion, HTMLMotionProps } from 'framer-motion';
 interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof HTMLMotionProps<"button">> {
     variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'ghost';
     isLoading?: boolean;
+    children?: React.ReactNode;
 }
 
 // Combine button props with motion props
-type CombinedProps = ButtonProps & HTMLMotionProps<"button">;
+type CombinedProps = ButtonProps & Omit<HTMLMotionProps<"button">, "children">;
 
 const Button = ({ children, variant = 'primary', className = '', isLoading = false, ...props }: CombinedProps) => {
   const base = "px-6 py-3.5 rounded-xl font-mier font-semibold transition-colors duration-200 flex items-center justify-center gap-2 focus:ring-4 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed text-base md:text-lg";
