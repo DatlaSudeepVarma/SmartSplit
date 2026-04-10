@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-const SmartSplitLogo = () => (
-  <div className="w-10 h-10 flex items-center justify-center filter drop-shadow-sm transition-transform hover:scale-105">
+const SmartSplitLogo = ({ className = "" }: { className?: string }) => (
+  <div className={`w-10 h-10 flex items-center justify-center filter drop-shadow-sm transition-transform hover:scale-105 ${className}`}>
     <svg viewBox="0 0 32 32" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="logo_grad" x1="2" y1="32" x2="32" y2="2" gradientUnits="userSpaceOnUse">

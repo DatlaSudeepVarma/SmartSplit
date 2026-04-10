@@ -6,6 +6,7 @@ import * as bills from './bills';
 import * as dashboard from './dashboard';
 import * as profile from './profile';
 import * as share from './share';
+import * as admin from './admin';
 
 export const api = {
     ...auth,
@@ -15,5 +16,6 @@ export const api = {
     ...bills,
     ...dashboard,
     ...profile,
-    ...share
+    ...share,
+    ...admin
 };
