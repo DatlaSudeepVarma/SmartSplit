@@ -31,6 +31,9 @@ class User(APIModel):
     name: str
     email: EmailStr
     monthly_salary: float | None = None
+    is_admin: bool = False
+    login_count: int = 0
+    total_expenses: float = 0.0
 
 
 class AuthResponse(APIModel):

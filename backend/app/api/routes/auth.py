@@ -37,5 +37,10 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)) -> AuthResponse:
     if not user or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
+    user.login_count += 1
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
     user_schema = User.model_validate(user)
     return AuthResponse(user=user_schema, token="dev-token")

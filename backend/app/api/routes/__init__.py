@@ -1,14 +1,14 @@
-from app.api.routes import activities, auth, bills, daily_expenses, dashboard, me, participants, profile, share, trips
+from app.api.routes import activities, admin, auth, bills, daily_expenses, dashboard, me, participants, share, trips
 
 __all__ = [
     "auth",
     "dashboard",
     "me",
     "participants",
-    "profile",
     "trips",
     "share",
     "activities",
     "daily_expenses",
     "bills",
+    "admin",
 ]
