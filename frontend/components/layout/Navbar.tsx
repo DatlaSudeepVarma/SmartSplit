@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useContext, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Moon, Sun, ArrowLeftRight, Calculator as CalcIcon } from 'lucide-react';
+import { Moon, Sun, ArrowLeftRight, LogOut, Calculator as CalcIcon, Shield } from 'lucide-react';
 import Image from 'next/image';
-import SmartSplitLogo from '../ui/SmartSplitLogo';
 import Button from '../ui/Button';
 import CalculatorModal from '../modals/CalculatorModal';
 import CurrencyConverterModal from '../modals/CurrencyConverterModal';
@@ -14,12 +13,22 @@ import { CURRENCIES } from '../../lib/constants';
 import { Currency } from '../../types';
 
 const Navbar = () => {
-    const { user, guestName } = useContext(AuthContext);
+    const { user, guestName, logout } = useContext(AuthContext); // Added logout
     const { theme, toggleTheme } = useContext(ThemeContext);
     const { currency, setCurrency } = useContext(CurrencyContext);
     const router = useRouter();
+    const pathname = usePathname();
     const [showCalc, setShowCalc] = useState(false);
     const [showConv, setShowConv] = useState(false);
+
+    // After log in (on the dashboard), the navbar should not appear
+    if (pathname.startsWith('/dashboard')) return null;
+
+    const handleLogout = () => {
+        logout();
+        router.push('/');
+        router.refresh();
+    };
 
     return (
         <>
@@ -41,7 +50,6 @@ const Navbar = () => {
                                     className="object-contain"
                                 />
                             </motion.div>
-
                         </div>
 
                         <div className="flex items-center gap-3 sm:gap-6">
@@ -71,22 +79,50 @@ const Navbar = () => {
                             </button>
 
                             {user ? (
-                                <div className="flex items-center gap-4 pl-4 border-l border-gray-200/50 dark:border-gray-800/50">
-                                    <button onClick={() => router.push('/profile')} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-blue to-brand-green text-white flex items-center justify-center font-black shadow-lg shadow-brand-blue/20">
-                                            {user.name.charAt(0).toUpperCase()}
-                                        </div>
-                                        <span className="font-bold text-gray-800 dark:text-gray-100 hidden md:block tracking-tight">{user.name}</span>
+                                <div className="flex items-center gap-2 pl-4 border-l border-gray-200/50 dark:border-gray-800/50">
+                                    {user.isAdmin && (
+                                        <button 
+                                            onClick={() => router.push('/admin')} 
+                                            className="p-2.5 text-gray-500 hover:text-purple-500 hover:bg-purple-500/10 rounded-xl transition-all"
+                                            title="Admin Panel"
+                                        >
+                                            <Shield size={20} />
+                                        </button>
+                                    )}
+                                    {!user.isAdmin && (
+                                        <button onClick={() => router.push('/profile')} className="flex items-center gap-3 hover:opacity-80 transition-opacity group">
+                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-blue to-brand-green text-white flex items-center justify-center font-black shadow-lg shadow-brand-blue/20 group-hover:scale-105 transition-all">
+                                                {user.name.charAt(0).toUpperCase()}
+                                            </div>
+                                            <span className="font-bold text-gray-800 dark:text-gray-100 hidden md:block tracking-tight">{user.name}</span>
+                                        </button>
+                                    )}
+                                    <button 
+                                        onClick={handleLogout} 
+                                        className="p-2 text-gray-400 hover:text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-all"
+                                        title="Sign Out"
+                                    >
+                                        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                                            <LogOut size={20} />
+                                        </motion.div>
                                     </button>
                                 </div>
                             ) : (
-                                guestName ? (
-                                    <div className="flex items-center gap-3 bg-brand-orange/10 px-5 py-2.5 rounded-2xl border border-brand-orange/20">
-                                        <span className="text-xs text-brand-orange font-black uppercase tracking-widest">Guest: {guestName}</span>
-                                    </div>
-                                ) : (
-                                    <Button onClick={() => router.push('/login')} className="hidden sm:flex py-3 px-8 text-sm font-black rounded-2xl shadow-xl shadow-brand-blue/20">Sign In</Button>
-                                )
+                                <div className="flex items-center gap-2 pl-4 border-l border-gray-200/50 dark:border-gray-800/50">
+                                    <Button 
+                                        variant="ghost" 
+                                        onClick={() => router.push('/login')} 
+                                        className="py-2 px-5 text-sm font-black rounded-xl"
+                                    >
+                                        Login
+                                    </Button>
+                                    <Button 
+                                        onClick={() => router.push('/register')} 
+                                        className="py-2.5 px-6 text-sm font-black rounded-2xl shadow-xl shadow-brand-blue/20"
+                                    >
+                                        Register
+                                    </Button>
+                                </div>
                             )}
                         </div>
                     </div>

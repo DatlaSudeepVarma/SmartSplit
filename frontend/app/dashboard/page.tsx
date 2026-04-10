@@ -18,10 +18,14 @@ const Dashboard = () => {
     const [stats, setStats] = useState({ totalTracked: 0, tripCount: 0 });
 
     useEffect(() => {
+        if (user?.isAdmin) {
+            router.push('/admin');
+            return;
+        }
         if (user) {
             api.getUserStats(user.id).then(setStats);
         }
-    }, [user]);
+    }, [user, router]);
 
     return (
         <ProtectedRoute>

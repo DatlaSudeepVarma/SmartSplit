@@ -5,6 +5,9 @@ export interface UserData {
     name: string;
     email: string;
     monthlySalary?: number;
+    isAdmin?: boolean;
+    loginCount?: number;
+    totalExpenses?: number;
 }
 
 export interface Participant {

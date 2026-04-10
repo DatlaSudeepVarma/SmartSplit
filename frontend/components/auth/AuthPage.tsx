@@ -34,9 +34,9 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
         setError('');
         setSuccess('');
 
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(formData.email)) {
-            setError("Please enter a valid @gmail.com address.");
+            setError("Please enter a valid email address.");
             setLoading(false);
             return;
         }
@@ -74,7 +74,11 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
             } else {
                 const res = await api.login(formData.email, formData.password);
                 login(res.user, res.token);
-                router.push('/dashboard');
+                if (res.user.isAdmin) {
+                    router.push('/admin');
+                } else {
+                    router.push('/dashboard');
+                }
             }
         } catch (err: unknown) {
             const error = err as Error;
