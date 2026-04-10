@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 
 from app.api.deps import get_current_user_id
 from app.schemas.daily_expenses import SalaryResponse, UpdateSalaryRequest
+from app.schemas.me import UserProfileData
 
 router = APIRouter(prefix="/me")
 
@@ -19,3 +20,8 @@ def update_salary(_payload: UpdateSalaryRequest, _user_id: str = Depends(get_cur
 @router.get("/trip-shares", response_model=dict[str, float])
 def get_trip_shares(_user_id: str = Depends(get_current_user_id)) -> dict[str, float]:
     return {}
+
+
+@router.get("/profile", response_model=UserProfileData)
+def get_profile(_user_id: str = Depends(get_current_user_id)) -> UserProfileData:
+    return UserProfileData(trips=[], expenses=[])
