@@ -29,7 +29,7 @@ const Navbar = () => {
                 transition={{ duration: 0.8, type: 'spring', stiffness: 100 }}
                 className="fixed top-6 left-0 right-0 z-50 px-4 sm:px-6 pointer-events-none"
             >
-                <nav className="max-w-[1400px] mx-auto bg-white/30 dark:bg-gray-900/30 backdrop-blur-2xl border border-white/40 dark:border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] rounded-[32px] overflow-hidden pointer-events-auto transition-all duration-500 hover:bg-white/40 dark:hover:bg-gray-900/40 hover:border-white/60 dark:hover:border-white/20 hover:shadow-[0_12px_48px_0_rgba(31,38,135,0.1)] group">
+                <nav className="max-w-[1400px] mx-auto bg-white/30 dark:bg-gray-900/30 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] rounded-[32px] overflow-hidden pointer-events-auto transition-all duration-500 hover:bg-white/40 dark:hover:bg-gray-900/40 hover:border-white/60 dark:hover:border-white/20 hover:shadow-[0_12px_48px_0_rgba(31,38,135,0.1)] group">
                     <div className="px-5 sm:px-8 h-16 sm:h-20 flex justify-between items-center">
                         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => user ? router.push('/dashboard') : router.push('/')}>
                             <motion.div whileHover={{ rotate: 15, scale: 1.1 }}>

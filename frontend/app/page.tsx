@@ -199,11 +199,11 @@ const LandingPage = () => {
   const [particles, setParticles] = useState<{ x: number, y: number, op: number, dur: number }[]>([]);
 
   React.useEffect(() => {
-    setParticles([...Array(20)].map(() => ({
+    setParticles([...Array(10)].map(() => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
-      op: 0.1 + Math.random() * 0.3,
-      dur: 10 + Math.random() * 20
+      op: 0.1 + Math.random() * 0.2,
+      dur: 15 + Math.random() * 20
     })));
   }, []);
 
@@ -218,7 +218,7 @@ const LandingPage = () => {
             opacity: [0.1, 0.2, 0.1]
           }}
           transition={{ duration: 20, repeat: Infinity }}
-          className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-gradient-to-br from-brand-blue/30 to-brand-green/20 rounded-full blur-[120px]"
+          className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-gradient-to-br from-brand-blue/30 to-brand-green/20 rounded-full blur-[80px] will-change-transform transform-gpu"
         />
         <motion.div
           animate={{
@@ -227,7 +227,7 @@ const LandingPage = () => {
             opacity: [0.1, 0.2, 0.1]
           }}
           transition={{ duration: 25, repeat: Infinity, delay: 2 }}
-          className="absolute -bottom-[10%] -right-[10%] w-[50%] h-[50%] bg-gradient-to-tr from-brand-green/30 to-brand-orange/20 rounded-full blur-[120px]"
+          className="absolute -bottom-[10%] -right-[10%] w-[50%] h-[50%] bg-gradient-to-tr from-brand-green/30 to-brand-orange/20 rounded-full blur-[80px] will-change-transform transform-gpu"
         />
       </div>
 
@@ -251,7 +251,7 @@ const LandingPage = () => {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute w-2 h-2 sm:w-4 sm:h-4 bg-brand-blue/20 rounded-full"
+            className="absolute w-2 h-2 sm:w-4 sm:h-4 bg-brand-blue/10 rounded-full will-change-transform"
             style={{
               left: `${p.x}%`,
               top: `${p.y}%`,
@@ -327,7 +327,7 @@ const LandingPage = () => {
       </section>
 
       {/* Stats Counter Section */}
-      <section className="py-20 bg-white/40 dark:bg-gray-900/40 backdrop-blur-3xl border-y border-gray-200 dark:border-gray-800">
+      <section className="py-20 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-y border-gray-200 dark:border-gray-800">
         <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
           {stats.map((stat, i) => (
             <motion.div 
@@ -440,7 +440,7 @@ const LandingPage = () => {
 
               return (
                 <TiltCard key={i} className="h-full">
-                  <Card className={`group relative h-full flex flex-col p-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-3xl rounded-[48px] border-2 border-transparent hover:border-brand-blue/30 transition-all duration-500 shadow-2xl hover:shadow-[0_30px_100px_-20px_rgba(59,130,246,0.3)]`}>
+                  <Card className={`group relative h-full flex flex-col p-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-[48px] border-2 border-transparent hover:border-brand-blue/30 transition-all duration-500 shadow-2xl hover:shadow-[0_30px_100px_-20px_rgba(59,130,246,0.3)]`}>
                     
                     {/* Glowing background effect */}
                     <div className={`absolute -top-20 -right-20 w-40 h-40 ${glowColors[item.color]} rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
@@ -531,19 +531,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer (Simplified for landing) */}
-      <footer className="py-20 px-6 border-t border-gray-100 dark:border-gray-900">
-         <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-10 opacity-50">
-            <div className="font-black text-3xl italic tracking-tighter">SMARTSPLIT</div>
-            <div className="flex gap-10 font-bold">
-              <a href="#" className="hover:text-brand-blue transition-colors">Terms</a>
-              <a href="#" className="hover:text-brand-blue transition-colors">Privacy</a>
-              <a href="#" className="hover:text-brand-blue transition-colors">Twitter</a>
-              <a href="#" className="hover:text-brand-blue transition-colors">Contact</a>
-            </div>
-            <div className="font-bold">© 2026 SmartSplit Inc.</div>
-         </div>
-      </footer>
     </div>
   );
 };
