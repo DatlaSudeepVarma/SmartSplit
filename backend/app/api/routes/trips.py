@@ -1,8 +1,13 @@
 from datetime import datetime
+from typing import List, Dict, Any, Tuple
+import json
+from collections import defaultdict
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user_id
+from app.api.deps import get_db, get_current_user_id
+from app.models import Trip as TripModel, Participant as ParticipantModel, Expense as ExpenseModel
 from app.schemas.trips import (
     AnalyticsData,
     CreateParticipantRequest,
@@ -16,128 +21,295 @@ from app.schemas.trips import (
     TripDetailsView,
     UpdateExpenseRequest,
     UpdateTripRequest,
+    Settlement,
 )
 
 router = APIRouter(prefix="/trips")
 
+def calculate_analytics(participants: List[ParticipantModel], expenses: List[ExpenseModel]) -> Dict[str, Any]:
+    total_cost = sum(e.amount for e in expenses if not e.is_payment)
+    
+    cat_sums = defaultdict(float)
+    cat_involved = defaultdict(lambda: defaultdict(float))
+    for e in expenses:
+        if e.is_payment: continue
+        cat_sums[e.category] += e.amount
+        split_list = json.loads(e.split_among) if e.split_among else []
+        if not split_list: continue
+        share = e.amount / len(split_list)
+        for pid in split_list:
+            p_name = next((p.name for p in participants if p.id == pid), "Unknown")
+            cat_involved[e.category][p_name] += share
 
-@router.get("", response_model=list[Trip])
-def list_trips(_user_id: str = Depends(get_current_user_id)) -> list[Trip]:
-    return []
+    daily_sums = defaultdict(float)
+    for e in expenses:
+        if e.is_payment: continue
+        d = e.date.isoformat()[:10]
+        daily_sums[d] += e.amount
+    
+    paid_totals = defaultdict(float)
+    share_totals = defaultdict(float)
+    payer_categories = defaultdict(lambda: defaultdict(float))
+    participant_indiv_cat_stats = defaultdict(lambda: defaultdict(float))
+    
+    for e in expenses:
+        if e.is_payment: continue
+        paid_totals[e.paid_by] += e.amount
+        split_list = json.loads(e.split_among) if e.split_among else []
+        if split_list:
+            share = e.amount / len(split_list)
+            for pid in split_list:
+                share_totals[pid] += share
+                participant_indiv_cat_stats[pid][e.category] += share
+        
+        payer_categories[e.paid_by][e.category] += e.amount
+
+    category_stats = []
+    for cat, total in cat_sums.items():
+        category_stats.append({
+            "category": cat,
+            "total": total,
+            "involved": dict(cat_involved[cat])
+        })
+        
+    # ChartBar: label, value
+    daily_stats = [{"label": d, "value": a} for d, a in sorted(daily_sums.items())]
+    
+    total_payer_stats = []
+    for p in participants:
+        total_payer_stats.append({
+            "id": p.id,
+            "name": p.name,
+            "amount": paid_totals[p.id],
+            "categories": list(payer_categories[p.id].items())
+        })
+        
+    individual_share_stats = []
+    for p in participants:
+        individual_share_stats.append({
+            "participant": {"id": p.id, "name": p.name, "trip_id": p.trip_id},
+            "total": share_totals[p.id],
+            "categories": list(participant_indiv_cat_stats[p.id].items())
+        })
+
+    # ChartSlice: label, value, color
+    colors = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899"]
+    participant_stats = []
+    for i, p in enumerate(participants):
+        participant_stats.append({
+            "label": p.name,
+            "value": share_totals[p.id],
+            "color": colors[i % len(colors)]
+        })
+
+    return {
+        "total_trip_cost": total_cost,
+        "category_stats": category_stats,
+        "daily_stats": daily_stats,
+        "participant_stats": participant_stats,
+        "total_payer_stats": total_payer_stats,
+        "individual_share_stats": individual_share_stats,
+    }
+
+def calculate_settlements(participants: List[ParticipantModel], expenses: List[ExpenseModel]) -> Dict[str, Any]:
+    balances = defaultdict(float)
+    stats = defaultdict(lambda: {"paid": 0.0, "share": 0.0, "received": 0.0})
+
+    for e in expenses:
+        if e.is_payment:
+            target_ids = json.loads(e.split_among) if e.split_among else []
+            if target_ids:
+                to_id = target_ids[0]
+                balances[e.paid_by] += e.amount
+                balances[to_id] -= e.amount
+                stats[e.paid_by]["received"] += e.amount
+            continue
+
+        balances[e.paid_by] += e.amount
+        stats[e.paid_by]["paid"] += e.amount
+        
+        split_list = json.loads(e.split_among) if e.split_among else []
+        if split_list:
+            share = e.amount / len(split_list)
+            for pid in split_list:
+                balances[pid] -= share
+                stats[pid]["share"] += share
+
+    positives = []
+    negatives = []
+    for pid, bal in balances.items():
+        if bal > 0.01: positives.append([pid, bal])
+        elif bal < -0.01: negatives.append([pid, -bal])
+        
+    settlements = []
+    pos_idx = 0
+    neg_idx = 0
+    while pos_idx < len(positives) and neg_idx < len(negatives):
+        p_id, p_amt = positives[pos_idx]
+        n_id, n_amt = negatives[neg_idx]
+        
+        amount = min(p_amt, n_amt)
+        p_name = next((p.name for p in participants if p.id == p_id), "Unknown")
+        n_name = next((p.name for p in participants if p.id == n_id), "Unknown")
+        
+        settlements.append({
+            "from": n_name,
+            "from_id": n_id,
+            "to": p_name,
+            "to_id": p_id,
+            "amount": amount
+        })
+        
+        positives[pos_idx][1] -= amount
+        negatives[neg_idx][1] -= amount
+        
+        if positives[pos_idx][1] < 0.01: pos_idx += 1
+        if negatives[neg_idx][1] < 0.01: neg_idx += 1
+
+    return {
+        "settlements": settlements,
+        "stats": dict(stats),
+        "balances": dict(balances)
+    }
+
+@router.get("", response_model=List[Trip])
+def list_trips(db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> List[Trip]:
+    trips = db.query(TripModel).filter(TripModel.owner_id == current_user_id).all()
+    # Pydantic v2 uses model_validate, but APIModel might be different. 
+    # Let's try simpler list comprehension
+    return trips
 
 
 @router.post("", response_model=Trip)
-def create_trip(payload: CreateTripRequest, _user_id: str = Depends(get_current_user_id)) -> Trip:
-    return Trip(
-        id="trip_1",
+def create_trip(payload: CreateTripRequest, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> Trip:
+    new_trip = TripModel(
         name=payload.name,
-        owner_id="user_1",
-        created_at=datetime.utcnow(),
+        owner_id=current_user_id,
         icon=payload.icon,
         custom_image=payload.custom_image,
-        share_permission=None,
-        type=payload.type,
-        currency=payload.currency,
+        type=payload.type or "trip",
+        currency=payload.currency or "INR"
     )
-
-
-@router.patch("/{trip_id}")
-def update_trip(_trip_id: str, _payload: UpdateTripRequest, _user_id: str = Depends(get_current_user_id)) -> None:
-    return None
-
-
-@router.delete("/{trip_id}")
-def delete_trip(_trip_id: str, _user_id: str = Depends(get_current_user_id)) -> None:
-    return None
+    db.add(new_trip)
+    db.commit()
+    db.refresh(new_trip)
+    return new_trip
 
 
 @router.get("/{trip_id}/view", response_model=TripDetailsView)
-def trip_view(trip_id: str, _user_id: str = Depends(get_current_user_id)) -> TripDetailsView:
-    trip = Trip(
-        id=trip_id,
-        name="Trip",
-        owner_id="user_1",
-        created_at=datetime.utcnow(),
-        icon="plane",
-        custom_image=None,
-        share_token=None,
-        share_permission=None,
-        type="trip",
-        currency="INR",
-    )
+def trip_view(trip_id: str, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> TripDetailsView:
+    trip_model = db.query(TripModel).filter(TripModel.id == trip_id).first()
+    if not trip_model:
+        raise HTTPException(status_code=404, detail="Trip not found")
 
-    settlement_data = SettlementSummary(settlements=[], stats={}, balances={})
+    participants = db.query(ParticipantModel).filter(ParticipantModel.trip_id == trip_id).all()
+    expenses = db.query(ExpenseModel).filter(ExpenseModel.trip_id == trip_id).all()
 
-    analytics = AnalyticsData(
-        participant_stats=[],
-        daily_stats=[],
-        category_stats=[],
-        total_trip_cost=0.0,
-        total_payer_stats=[],
-        individual_share_stats=[],
-    )
+    schema_expenses = []
+    groups = defaultdict(list)
+    
+    for e in expenses:
+        try:
+            split_among = json.loads(e.split_among) if e.split_among else []
+        except:
+            split_among = []
+        
+        # Pydantic will handle model to schema conversion if we return dict or model
+        schema_exp = {
+            "id": e.id,
+            "trip_id": e.trip_id,
+            "description": e.description,
+            "amount": e.amount,
+            "date": e.date,
+            "category": e.category,
+            "paid_by": e.paid_by,
+            "split_among": split_among,
+            "is_payment": e.is_payment
+        }
+        schema_expenses.append(schema_exp)
+        
+        date_str = e.date.isoformat()[:10] if hasattr(e.date, 'isoformat') else str(e.date)[:10]
+        groups[date_str].append(schema_exp)
 
-    return TripDetailsView(
-        trip=trip,
-        participants=[],
-        expenses=[],
-        logs=[],
-        settlement_data=settlement_data,
-        daily_balances=[],
-        grouped_expenses=[],
-        analytics_data=analytics,
-        user_share=0.0,
-        share_token=trip.share_token,
-        share_permission=trip.share_permission,
-    )
+    sorted_groups = sorted(groups.items(), key=lambda x: x[0], reverse=True)
 
+    settlement_data = calculate_settlements(participants, expenses)
+    analytics = calculate_analytics(participants, expenses)
 
-@router.post("/logs/{log_id}/revert")
-def revert_log(_log_id: str, _user_id: str = Depends(get_current_user_id)) -> None:
-    return None
-
-
-@router.post("/{trip_id}/revert-all")
-def revert_all(_trip_id: str, _user_id: str = Depends(get_current_user_id)) -> None:
-    return None
-
-
-@router.post("/{trip_id}/share", response_model=CreateShareLinkResponse)
-def create_share_link(_trip_id: str, _payload: CreateShareLinkRequest, _user_id: str = Depends(get_current_user_id)) -> CreateShareLinkResponse:
-    return CreateShareLinkResponse(token="share-token")
+    return {
+        "trip": trip_model,
+        "participants": participants,
+        "expenses": schema_expenses,
+        "logs": [],
+        "settlement_data": settlement_data,
+        "daily_balances": [],
+        "grouped_expenses": sorted_groups,
+        "analytics_data": analytics,
+        "user_share": 0.0,
+        "share_token": None,
+        "share_permission": None,
+    }
 
 
 @router.post("/{trip_id}/participants", response_model=Participant)
-def add_participant(trip_id: str, payload: CreateParticipantRequest, _user_id: str = Depends(get_current_user_id)) -> Participant:
-    return Participant(id="p_1", trip_id=trip_id, name=payload.name)
-
-
-@router.delete("/{trip_id}/participants/{participant_id}")
-def remove_participant(_trip_id: str, _participant_id: str, _user_id: str = Depends(get_current_user_id)) -> None:
-    return None
+def add_participant(trip_id: str, payload: CreateParticipantRequest, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> Participant:
+    new_participant = ParticipantModel(trip_id=trip_id, name=payload.name)
+    db.add(new_participant)
+    db.commit()
+    db.refresh(new_participant)
+    return new_participant
 
 
 @router.post("/{trip_id}/expenses", response_model=Expense)
-def add_expense(trip_id: str, payload: dict, _user_id: str = Depends(get_current_user_id)) -> Expense:
-    expense = payload.get("expense", {})
-    return Expense(
-        id="e_1",
+def add_expense(trip_id: str, payload: dict, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> Expense:
+    expense_data = payload.get("expense", payload)
+    
+    date_val = datetime.utcnow()
+    raw_date = expense_data.get("date")
+    if raw_date:
+        try:
+            date_val = datetime.fromisoformat(raw_date.replace('Z', '+00:00'))
+        except:
+             pass
+
+    new_expense = ExpenseModel(
         trip_id=trip_id,
-        description=str(expense.get("description", "Expense")),
-        amount=float(expense.get("amount", 0)),
-        date=datetime.utcnow(),
-        category=str(expense.get("category", "Others")),
-        paid_by=str(expense.get("paidBy", "")),
-        split_among=expense.get("splitAmong") or [],
-        is_payment=bool(expense.get("isPayment")) if "isPayment" in expense else None,
+        description=expense_data.get("description", "Expense"),
+        amount=float(expense_data.get("amount", 0)),
+        date=date_val,
+        category=expense_data.get("category", "Others"),
+        paid_by=expense_data.get("paidBy"),
+        split_among=json.dumps(expense_data.get("splitAmong", [])),
+        is_payment=expense_data.get("isPayment", False)
     )
+    db.add(new_expense)
+    db.commit()
+    db.refresh(new_expense)
+    
+    return {
+        "id": new_expense.id,
+        "trip_id": new_expense.trip_id,
+        "description": new_expense.description,
+        "amount": new_expense.amount,
+        "date": new_expense.date,
+        "category": new_expense.category,
+        "paid_by": new_expense.paid_by,
+        "split_among": json.loads(new_expense.split_among),
+        "is_payment": new_expense.is_payment
+    }
 
-
-@router.patch("/{trip_id}/expenses/{expense_id}")
-def update_expense(_trip_id: str, _expense_id: str, _payload: UpdateExpenseRequest, _user_id: str = Depends(get_current_user_id)) -> None:
+@router.delete("/{trip_id}/participants/{participant_id}")
+def remove_participant(trip_id: str, participant_id: str, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> None:
+    part = db.query(ParticipantModel).filter(ParticipantModel.id == participant_id).first()
+    if part:
+        db.delete(part)
+        db.commit()
     return None
 
-
 @router.delete("/{trip_id}/expenses/{expense_id}")
-def delete_expense(_trip_id: str, _expense_id: str, _user_id: str = Depends(get_current_user_id)) -> None:
+def delete_expense(trip_id: str, expense_id: str, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> None:
+    exp = db.query(ExpenseModel).filter(ExpenseModel.id == expense_id).first()
+    if exp:
+        db.delete(exp)
+        db.commit()
     return None
