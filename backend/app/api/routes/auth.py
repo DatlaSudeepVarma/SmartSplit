@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
-from app.core.security import get_password_hash, verify_password
+from app.core.security import get_password_hash, verify_password, create_access_token
 from app.models import User as UserModel
 from app.schemas.auth import AuthResponse, LoginRequest, RegisterRequest, User
 
@@ -28,7 +28,7 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)) -> AuthRes
     db.refresh(new_user)
 
     user_schema = User.model_validate(new_user)
-    return AuthResponse(user=user_schema, token="dev-token")
+    return AuthResponse(user=user_schema, token=create_access_token(new_user.id))
 
 
 @router.post("/login", response_model=AuthResponse)
@@ -43,4 +43,4 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)) -> AuthResponse:
     db.refresh(user)
 
     user_schema = User.model_validate(user)
-    return AuthResponse(user=user_schema, token="dev-token")
+    return AuthResponse(user=user_schema, token=create_access_token(user.id))
