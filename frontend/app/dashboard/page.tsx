@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { PieChart, Users, Receipt, Plane, Wallet, Sparkles, TrendingUp, CreditCard } from 'lucide-react';
+import { PieChart, Users, Receipt, Plane, Wallet, Sparkles, TrendingUp, CreditCard, LogOut } from 'lucide-react';
 import { AuthContext, CurrencyContext } from '../../context/AppContext';
 import { api } from '../../lib/api';
 import { formatAmount } from '../../lib/formatters';
@@ -12,10 +12,15 @@ import ModuleCard from '../../components/ui/ModuleCard';
 import ProtectedRoute from '../../components/auth/ProtectedRoute';
 
 const Dashboard = () => {
-    const { user } = useContext(AuthContext);
+    const { user, logout } = useContext(AuthContext);
     const { symbol } = useContext(CurrencyContext);
     const router = useRouter();
     const [stats, setStats] = useState({ totalTracked: 0, tripCount: 0 });
+
+    const handleLogout = () => {
+        logout();
+        router.push('/');
+    };
 
     useEffect(() => {
         if (user?.isAdmin) {
@@ -31,13 +36,18 @@ const Dashboard = () => {
         <ProtectedRoute>
             <div className="relative">
                 <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-blue/10 via-white to-white dark:from-brand-blue/5 dark:via-gray-900 dark:to-gray-900" />
-                <div className="p-4 sm:p-8 max-w-[1600px] mx-auto space-y-8 sm:space-y-12">
+                <div className="p-4 sm:p-8 pt-0 sm:pt-4 max-w-[1600px] mx-auto space-y-8 sm:space-y-12">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
                         <div>
                             <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-gray-900 dark:text-white mb-3">Welcome back, {user?.name}</h1>
                             <p className="text-gray-600 dark:text-gray-400 text-lg">Your overview for today.</p>
                         </div>
-                        <Button onClick={() => router.push('/profile')} className="px-6 py-3 text-base"> View All Expenses </Button>
+                        <div className="flex gap-4 w-full sm:w-auto">
+                            <Button onClick={() => router.push('/profile')} variant="ghost" className="px-6 py-3 text-base flex-1 sm:flex-none"> View All Expenses </Button>
+                            <Button onClick={handleLogout} variant="danger" className="px-6 py-3 text-base flex-1 sm:flex-none flex items-center justify-center gap-2"> 
+                                <LogOut size={20} /> Sign Out 
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">

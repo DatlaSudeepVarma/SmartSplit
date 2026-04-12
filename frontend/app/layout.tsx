@@ -27,7 +27,7 @@ export default function RootLayout({
           <SmoothScroll>
             <Loader />
             <Navbar />
-            <main className="min-h-screen">
+            <main className="min-h-screen pt-12 sm:pt-16">
               {children}
             </main>
             <Footer />
