@@ -85,7 +85,7 @@ const TripsList = () => {
                                 trip={trip}
                                 userShare={shares[trip.id]}
                                 symbol={symbol}
-                                onClick={() => router.push(`/trips/${slugify(trip.name)}`)}
+                                onClick={() => router.push(`/trips/${trip.id}`)}
                                 onDelete={() => handleDelete(trip.id)}
                                 onEdit={() => {
                                     setEditingTrip(trip);

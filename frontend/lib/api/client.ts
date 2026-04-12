@@ -11,8 +11,7 @@ export class ApiError extends Error {
 }
 
 function getBaseUrl() {
-    const base = process.env.NEXT_PUBLIC_API_URL;
-    if (!base) return '';
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
     return base.endsWith('/') ? base.slice(0, -1) : base;
 }
 
@@ -52,10 +51,16 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
     const baseUrl = getBaseUrl();
     const url = `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
 
-    const res = await fetch(url, {
-        ...init,
-        headers: buildHeaders(init?.headers)
-    });
+    let res: Response;
+    try {
+        res = await fetch(url, {
+            ...init,
+            headers: buildHeaders(init?.headers)
+        });
+    } catch (e: any) {
+        console.error(`[API ERROR] Failed to connect to ${url}. Is the backend running?`, e);
+        throw new Error(`Connection failed to ${url}. Please ensure backend is running at ${baseUrl}.`);
+    }
 
     const contentType = res.headers.get('content-type') || '';
     const isJson = contentType.includes('application/json');
