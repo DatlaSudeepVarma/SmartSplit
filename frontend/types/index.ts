@@ -23,7 +23,7 @@ export interface Expense {
     amount: number;
     date: string;
     category: string;
-    paidBy: string;
+    paidBy: string[];
     splitAmong?: string[];
     isPayment?: boolean;
 }
@@ -41,6 +41,15 @@ export interface Trip {
     sharePermission?: SharePermission;
     type?: 'trip' | 'dining' | 'movies' | 'play';
     currency?: Currency;
+}
+
+export interface TripSummary {
+    id: string;
+    name: string;
+    date: string;
+    totalCost: number;
+    userShare: number;
+    participantCount: number;
 }
 
 export interface ChangeLog {

@@ -11,7 +11,7 @@ import Button from '../ui/Button';
 import SmartSplitLogo from '../ui/SmartSplitLogo';
 
 const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
-    const { login } = useContext(AuthContext);
+    const { login, isAuthenticated } = useContext(AuthContext);
     const router = useRouter();
     const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
     const [showPass, setShowPass] = useState(false);
@@ -19,6 +19,12 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push('/dashboard');
+        }
+    }, [isAuthenticated, router]);
 
     useEffect(() => {
         setFormData({ name: '', email: '', password: '', confirmPassword: '' });
@@ -94,16 +100,16 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
     const toggleConfirmPass = () => setShowConfirmPass(!showConfirmPass);
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50 dark:bg-gray-900 transition-colors">
-            <Card className="w-full max-w-lg border border-gray-100 dark:border-gray-800 shadow-2xl p-10">
+        <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 transition-colors">
+            <Card className="w-full max-w-lg border border-gray-100 dark:border-gray-800 shadow-2xl p-6 sm:p-10">
                 <div className="text-center mb-10">
                     <div className="inline-flex mb-6">
                         <SmartSplitLogo />
                     </div>
-                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
                         {mode === 'login' ? 'Welcome Back' : 'Create Account'}
                     </h2>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 mt-3">
+                    <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 mt-3">
                         {mode === 'login' ? 'Enter your details to access your account.' : 'Join SmartSplit to start managing expenses.'}
                     </p>
                 </div>

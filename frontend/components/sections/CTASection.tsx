@@ -9,26 +9,26 @@ const CTASection = () => {
     const router = useRouter();
 
     return (
-        <section className="py-32 px-6">
-            <div className="max-w-[1200px] mx-auto bg-brand-blue rounded-[64px] p-12 sm:p-24 relative overflow-hidden">
+        <section className="py-20 sm:py-32 px-4 sm:px-6">
+            <div className="max-w-[1200px] mx-auto bg-brand-blue rounded-[32px] sm:rounded-[64px] p-8 sm:p-24 relative overflow-hidden">
                 {/* Decorative stuff */}
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-skyblue/20 to-transparent pointer-events-none" />
                 <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col lg:flex-row items-center gap-16">
                     <div className="flex-1 text-center lg:text-left">
-                        <h2 className="text-4xl sm:text-7xl font-black text-white mb-10 leading-tight uppercase italic tracking-tighter">
+                        <h2 className="text-3xl sm:text-5xl lg:text-7xl font-black text-white mb-6 sm:mb-10 leading-tight uppercase italic tracking-tighter">
                             Ready to <br /> stop the math?
                         </h2>
-                        <p className="text-2xl text-brand-blue-50 font-bold mb-12 text-blue-100">
+                        <p className="text-lg sm:text-2xl text-brand-blue-50 font-bold mb-8 sm:mb-12 text-blue-100">
                             Join 100,000+ users who split smarter with SmartSplit. 
                             Available on Web, iOS, and Android.
                         </p>
-                        <div className="flex flex-wrap justify-center lg:justify-start gap-6">
-                            <button onClick={() => router.push('/register')} className="px-12 py-6 bg-white text-brand-blue rounded-3xl font-black text-2xl hover:scale-105 transition-transform shadow-2xl">
+                        <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 sm:gap-6">
+                            <button onClick={() => router.push('/register')} className="px-8 py-4 sm:px-12 sm:py-6 bg-white text-brand-blue rounded-2xl sm:rounded-3xl font-black text-xl sm:text-2xl hover:scale-105 transition-transform shadow-2xl w-full sm:w-auto">
                                 Get Started Free
                             </button>
-                            <button className="px-12 py-6 border-2 border-white/30 text-white rounded-3xl font-black text-2xl hover:bg-white/10 transition-colors">
+                            <button className="px-8 py-4 sm:px-12 sm:py-6 border-2 border-white/30 text-white rounded-2xl sm:rounded-3xl font-black text-xl sm:text-2xl hover:bg-white/10 transition-colors w-full sm:w-auto">
                                 View Demo
                             </button>
                         </div>

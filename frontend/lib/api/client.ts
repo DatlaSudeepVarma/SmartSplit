@@ -51,15 +51,23 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
     const baseUrl = getBaseUrl();
     const url = `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
 
+    const headers = buildHeaders(init?.headers);
+    const requestBody = init?.body && typeof init.body === 'object' && !(init.body instanceof FormData) 
+        ? JSON.stringify(init.body) 
+        : init?.body;
+
     let res: Response;
     try {
         res = await fetch(url, {
             ...init,
-            headers: buildHeaders(init?.headers)
+            headers,
+            body: requestBody,
+            mode: 'cors',
+            credentials: 'include'
         });
     } catch (e: any) {
-        console.error(`[API ERROR] Failed to connect to ${url}. Is the backend running?`, e);
-        throw new Error(`Connection failed to ${url}. Please ensure backend is running at ${baseUrl}.`);
+        console.error(`[API ERROR] Failed to connect to ${url}.`, e);
+        throw new Error(`Connection failed to ${url} (${e.message}). Please ensure backend is running at ${baseUrl}.`);
     }
 
     const contentType = res.headers.get('content-type') || '';
@@ -68,9 +76,11 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
     const body = isJson ? await res.json().catch(() => null) : await res.text().catch(() => null);
 
     if (!res.ok) {
-        const msg = typeof body === 'object' && body && 'detail' in (body as any)
-            ? String((body as any).detail)
-            : `Request failed (${res.status})`;
+        let msg = `Request failed (${res.status})`;
+        if (typeof body === 'object' && body && 'detail' in (body as any)) {
+            const detail = (body as any).detail;
+            msg = typeof detail === 'string' ? detail : JSON.stringify(detail);
+        }
         throw new ApiError(msg, res.status, body);
     }
 

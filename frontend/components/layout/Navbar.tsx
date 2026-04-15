@@ -3,7 +3,7 @@
 import React, { useContext, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Moon, Sun, ArrowLeftRight, LogOut, Calculator as CalcIcon, Shield } from 'lucide-react';
+import { Moon, Sun, ArrowLeftRight, Calculator as CalcIcon, Shield } from 'lucide-react';
 import Image from 'next/image';
 import Button from '../ui/Button';
 import CalculatorModal from '../modals/CalculatorModal';
@@ -13,7 +13,7 @@ import { CURRENCIES } from '../../lib/constants';
 import { Currency } from '../../types';
 
 const Navbar = () => {
-    const { user, guestName, logout } = useContext(AuthContext); // Added logout
+    const { user, guestName } = useContext(AuthContext); // Added logout
     const { theme, toggleTheme } = useContext(ThemeContext);
     const { currency, setCurrency } = useContext(CurrencyContext);
     const router = useRouter();
@@ -22,13 +22,7 @@ const Navbar = () => {
     const [showConv, setShowConv] = useState(false);
 
     // After log in (on the dashboard), the navbar should not appear
-    if (pathname.startsWith('/dashboard')) return null;
 
-    const handleLogout = () => {
-        logout();
-        router.push('/');
-        router.refresh();
-    };
 
     return (
         <>
@@ -101,15 +95,6 @@ const Navbar = () => {
                                             <span className="font-bold text-gray-800 dark:text-gray-100 hidden md:block tracking-tight text-xs">{user.name}</span>
                                         </button>
                                     )}
-                                    <button
-                                        onClick={handleLogout}
-                                        className="p-1.5 text-gray-400 hover:text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-all"
-                                        title="Sign Out"
-                                    >
-                                        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                                            <LogOut size={18} />
-                                        </motion.div>
-                                    </button>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2 pl-3 border-l border-gray-200/50 dark:border-gray-800/50">

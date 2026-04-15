@@ -6,6 +6,7 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import Loader from "../components/layout/Loader";
 import SmoothScroll from "../components/ui/SmoothScroll";
+import ScrollProgressBar from "../components/ui/ScrollProgressBar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${outfit.variable} antialiased`}>
         <Providers>
           <SmoothScroll>
+            <ScrollProgressBar />
             <Loader />
             <Navbar />
             <main className="min-h-screen pt-12 sm:pt-16">
