@@ -64,6 +64,7 @@ const FeaturesSection = () => {
         {
           title: 'Trips',
           icon: Plane,
+          gif: '/travel.gif',
           desc: 'The ultimate travel expense manager for groups.',
           features: [
             'Smart Settlements (Who pays whom)',
@@ -76,6 +77,7 @@ const FeaturesSection = () => {
         {
           title: 'Daily Expense',
           icon: Wallet,
+          gif: '/shopping.gif',
           desc: 'Master your personal finances day by day.',
           features: [
             'AI Chatbot for tracking',
@@ -88,6 +90,7 @@ const FeaturesSection = () => {
         {
           title: 'Restaurant',
           icon: Utensils,
+          gif: '/food.gif',
           desc: 'Dine out without the math headache.',
           features: [
             'Receipt Scanning',
@@ -100,6 +103,7 @@ const FeaturesSection = () => {
         {
           title: 'Entertainment',
           icon: Film,
+          gif: '/entertainment.gif',
           desc: 'Movies, concerts, and fun times.',
           features: [
             'Quick Ticket Splitting',
@@ -112,6 +116,7 @@ const FeaturesSection = () => {
         {
           title: 'Sports & Play',
           icon: Gamepad2,
+          gif: '/games.gif',
           desc: 'Turf bookings and equipment sharing.',
           features: [
             'Court Rental Division',
@@ -124,6 +129,7 @@ const FeaturesSection = () => {
         {
           title: 'Shared Investments',
           icon: TrendingUp,
+          gif: '/Others.gif',
           desc: 'Track SIPs and group savings goals.',
           features: [
             'Goal Progress Tracking',
@@ -149,12 +155,12 @@ const FeaturesSection = () => {
     return (
         <section className="py-32 px-6 relative">
             <div className="max-w-[1600px] mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 sm:mb-24 gap-8">
                     <div className="max-w-2xl">
-                        <h2 className="text-5xl sm:text-7xl font-black text-gray-900 dark:text-white mb-8 tracking-tighter uppercase italic">
+                        <h2 className="text-3xl sm:text-5xl lg:text-7xl font-black text-gray-900 dark:text-white mb-6 sm:mb-8 tracking-tighter uppercase italic leading-tight">
                             From coffee <br /> to car rentals.
                         </h2>
-                        <p className="text-2xl text-gray-500 dark:text-gray-400 font-bold">
+                        <p className="text-lg sm:text-2xl text-gray-500 dark:text-gray-400 font-bold">
                             SmartSplit handles every shared expense scenario with effortless precision.
                         </p>
                     </div>
@@ -200,31 +206,31 @@ const FeaturesSection = () => {
 
                         return (
                             <TiltCard key={i} className="h-full">
-                                <Card className={`group relative h-full flex flex-col p-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-[48px] border-2 border-transparent hover:border-brand-blue/30 transition-all duration-500 shadow-2xl hover:shadow-[0_30px_100px_-20px_rgba(59,130,246,0.3)]`}>
+                                <Card className={`group relative h-full flex flex-col p-6 sm:p-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-[32px] sm:rounded-[48px] border-2 border-transparent hover:border-brand-blue/30 transition-all duration-500 shadow-2xl hover:shadow-[0_30px_100px_-20px_rgba(59,130,246,0.3)]`}>
                                     
                                     {/* Glowing background effect */}
                                     <div className={`absolute -top-20 -right-20 w-40 h-40 ${glowColors[item.color]} rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
 
-                                    <div className="flex items-center gap-6 mb-10">
-                                        <div className={`p-5 rounded-3xl transition-all duration-500 group-hover:rotate-12 group-hover:text-white ${colorClasses[item.color]}`}>
-                                            <item.icon size={40} />
+                                    <div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-10">
+                                        <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl transition-all duration-500 group-hover:rotate-12 overflow-hidden flex items-center justify-center ${colorClasses[item.color]}`}>
+                                            <img src={item.gif} alt={item.title} className="w-full h-full object-cover" />
                                         </div>
-                                        <h3 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">{item.title}</h3>
+                                        <h3 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">{item.title}</h3>
                                     </div>
 
-                                    <p className="text-gray-500 dark:text-gray-400 mb-12 leading-relaxed text-xl font-semibold min-h-[80px]">{item.desc}</p>
+                                    <p className="text-gray-500 dark:text-gray-400 mb-8 sm:mb-12 leading-relaxed text-base sm:text-xl font-semibold min-h-0 sm:min-h-[80px]">{item.desc}</p>
 
-                                    <div className="space-y-5 mt-auto">
+                                    <div className="space-y-4 sm:space-y-5 mt-auto">
                                         {item.features.map((feat, idx) => (
                                             <motion.div 
                                                 key={idx} 
                                                 initial={{ opacity: 0.8 }}
                                                 whileHover={{ x: 5, opacity: 1 }}
-                                                className="flex items-center gap-5 text-gray-700 dark:text-gray-200 bg-gray-50/80 dark:bg-black/20 p-5 rounded-2xl border border-transparent hover:bg-white dark:hover:bg-gray-800 transition-all group/feat"
+                                                className="flex items-center gap-3 sm:gap-5 text-gray-700 dark:text-gray-200 bg-gray-50/80 dark:bg-black/20 p-4 sm:p-5 rounded-xl sm:rounded-2xl border border-transparent hover:bg-white dark:hover:bg-gray-800 transition-all group/feat"
                                             >
-                                                <div className={`w-3 h-3 rounded-full ${dotColors[item.color]} flex-shrink-0`} />
-                                                <span className="font-bold text-lg">{feat}</span>
-                                                <CheckCircle2 className="ml-auto opacity-0 group-hover/feat:opacity-100 text-brand-green transition-opacity" size={20}/>
+                                                <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${dotColors[item.color]} flex-shrink-0`} />
+                                                <span className="font-bold text-sm sm:text-lg">{feat}</span>
+                                                <CheckCircle2 size={18} className="ml-auto opacity-0 group-hover/feat:opacity-100 text-brand-green transition-opacity sm:w-5 sm:h-5"/>
                                             </motion.div>
                                         ))}
                                     </div>

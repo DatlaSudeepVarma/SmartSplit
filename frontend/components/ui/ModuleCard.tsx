@@ -5,12 +5,13 @@ import React from 'react';
 interface ModuleCardProps {
     title: string;
     desc: string;
-    icon: React.ElementType;
+    icon?: React.ElementType;
+    gif?: string;
     onClick?: () => void;
     disabled?: boolean;
 }
 
-const ModuleCard = ({ title, desc, icon: Icon, onClick, disabled }: ModuleCardProps) => (
+const ModuleCard = ({ title, desc, icon: Icon, gif, onClick, disabled }: ModuleCardProps) => (
     <div
         onClick={!disabled ? onClick : undefined}
         className={`relative overflow-hidden text-left p-7 sm:p-8 rounded-3xl transition-all duration-300
@@ -33,10 +34,14 @@ const ModuleCard = ({ title, desc, icon: Icon, onClick, disabled }: ModuleCardPr
             </div>
 
             <div className={`
-                shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-colors
+                shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-colors overflow-hidden
                 ${disabled ? 'bg-gray-100 dark:bg-gray-800 text-gray-400' : 'bg-brand-blue/10 text-brand-blue group-hover:bg-brand-blue group-hover:text-white'}
             `}>
-                <Icon size={24} />
+                {gif ? (
+                    <img src={gif} alt={title} className="w-full h-full object-cover" />
+                ) : Icon ? (
+                    <Icon size={24} />
+                ) : null}
             </div>
         </div>
     </div>

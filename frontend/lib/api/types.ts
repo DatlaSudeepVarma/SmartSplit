@@ -1,4 +1,4 @@
-import { ChangeLog, DailyCategory, DailyExpense, Expense, Participant, RecurringItem, Settlement, SharePermission, Trip, UserData } from '../../types';
+import { ChangeLog, DailyCategory, DailyExpense, Expense, Participant, RecurringItem, Settlement, SharePermission, Trip, TripSummary, UserData } from '../../types';
 
 export type { Trip, Participant, Expense, ChangeLog, Settlement, DailyExpense, DailyCategory, RecurringItem, UserData, SharePermission };
 
@@ -60,7 +60,27 @@ export type AuthResponse = { user: UserData; token: string };
 
 export type UserStats = { totalTracked: number; tripCount: number };
 
-export type UserProfileData = { trips: Trip[]; expenses: (Expense & { tripName?: string })[] };
+export type UserProfileData = {
+    name: string;
+    email: string;
+    phoneNumber: string | null;
+    defaultCurrency: string;
+    timezone: string;
+    language: string;
+    notificationSettings: Record<string, boolean> | null;
+    trips: TripSummary[]; 
+    expenses: (Expense & { tripName?: string })[] 
+};
+
+export type UpdateProfileRequest = {
+    name?: string;
+    email?: string;
+    phoneNumber?: string | null;
+    defaultCurrency?: string;
+    timezone?: string;
+    language?: string;
+    notificationSettings?: Record<string, boolean>;
+};
 
 export type DailyStats = {
     totalSpent: number;

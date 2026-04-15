@@ -44,41 +44,41 @@ const Dashboard = () => {
                         </div>
                         <div className="flex gap-4 w-full sm:w-auto">
                             <Button onClick={() => router.push('/profile')} variant="ghost" className="px-6 py-3 text-base flex-1 sm:flex-none"> View All Expenses </Button>
-                            <Button onClick={handleLogout} variant="danger" className="px-6 py-3 text-base flex-1 sm:flex-none flex items-center justify-center gap-2"> 
-                                <LogOut size={20} /> Sign Out 
+                            <Button onClick={handleLogout} variant="danger" className="px-6 py-3 text-base flex-1 sm:flex-none flex items-center justify-center gap-2">
+                                <LogOut size={20} /> Sign Out
                             </Button>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                         <Card className="bg-gradient-to-br from-brand-blue to-brand-green text-gray-900 dark:text-gray-900 border-none shadow-2xl shadow-brand-blue/20">
-                        <div className="flex justify-between items-start">
-                            <div>
-                                <p className="text-gray-800/80 font-bold mb-2 text-base"> Total Expenses </p>
-                                <h3 className="text-4xl font-extrabold tracking-tight"> {symbol} {formatAmount(stats.totalTracked)} </h3>
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <p className="text-gray-800/80 font-bold mb-2 text-base"> Total Expenses </p>
+                                    <h3 className="text-4xl font-extrabold tracking-tight"> {symbol} {formatAmount(stats.totalTracked)} </h3>
+                                </div>
+                                <div className="p-4 bg-white/30 rounded-2xl backdrop-blur-sm"> <PieChart size={32} className="text-gray-900" /> </div>
                             </div>
-                            <div className="p-4 bg-white/30 rounded-2xl backdrop-blur-sm"> <PieChart size={32} className="text-gray-900" /> </div>
-                        </div>
-                    </Card>
+                        </Card>
                         <Card className="bg-white/70 dark:bg-gray-900/40 border border-white/30 dark:border-white/10 backdrop-blur-xl shadow-xl shadow-black/5">
-                        <div className="flex justify-between items-start">
-                            <div>
-                                <p className="text-gray-500 dark:text-gray-400 font-bold mb-2 text-base"> Active Trips </p>
-                                <h3 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight"> {stats.tripCount} </h3>
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <p className="text-gray-500 dark:text-gray-400 font-bold mb-2 text-base"> Active Trips </p>
+                                    <h3 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight"> {stats.tripCount} </h3>
+                                </div>
+                                <div className="p-4 bg-brand-green/10 text-brand-green rounded-2xl"> <Users size={32} /></div>
                             </div>
-                            <div className="p-4 bg-brand-green/10 text-brand-green rounded-2xl"> <Users size={32} /></div>
-                        </div>
-                    </Card>
+                        </Card>
                         <Card className="bg-white/70 dark:bg-gray-900/40 border border-white/30 dark:border-white/10 backdrop-blur-xl shadow-xl shadow-black/5">
-                        <div className="flex justify-between items-start">
-                            <div>
-                                <p className="text-gray-500 dark:text-gray-400 font-bold mb-2 text-base"> Pending Settlements </p>
-                                <h3 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight"> --</h3>
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <p className="text-gray-500 dark:text-gray-400 font-bold mb-2 text-base"> Pending Settlements </p>
+                                    <h3 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight"> --</h3>
+                                </div>
+                                <div className="p-4 bg-brand-orange/10 text-brand-orange rounded-2xl"> <Receipt size={32} /></div>
                             </div>
-                            <div className="p-4 bg-brand-orange/10 text-brand-orange rounded-2xl"> <Receipt size={32} /></div>
-                        </div>
-                    </Card>
-                </div>
+                        </Card>
+                    </div>
 
                     <div>
                         <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white mb-8"> Quick Access </h2>

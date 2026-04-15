@@ -28,13 +28,13 @@ const PayerRow = ({ p, i, symbol, totalTripCost, shareAmount }: { p: { id: strin
         <div className="bg-gray-50 dark:bg-gray-750/50 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden transition-all duration-300">
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="w-full flex items-center justify-start gap-140 p-4 text-left hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+                className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-start gap-4 sm:gap-20 p-4 text-left hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
             >
                 <div className="flex items-center gap-4 shrink-0">
                     <div className="w-10 h-10 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center font-bold">
                         {i + 1}
                     </div>
-                    <div className="min-w-[120px]">
+                    <div className="min-w-0 sm:min-w-[120px]">
                         <span className="font-bold text-gray-900 dark:text-white text-base"> {p.name} </span>
                         <div className="flex items-center gap-1 mt-0.5">
                             <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
@@ -233,7 +233,7 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                 amount: settlement.amount,
                 date: new Date().toISOString(),
                 category: 'Payment',
-                paidBy: settlement.fromId,
+                paidBy: [settlement.fromId],
                 splitAmong: [settlement.toId],
                 isPayment: true
             }, actor);
@@ -260,12 +260,12 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
             <div className="mb-12">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                     <div>
-                        <div className="flex items-center gap-3 mb-3">
-                            <h1 className="text-4xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
+                            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white flex flex-wrap items-center gap-3">
                                 {data.trip.name}
                                 {userShare > 0 && (
-                                    <span className="text-xl font-bold text-brand-blue bg-brand-blue/5 px-3 py-1 rounded-full border border-brand-blue/10 flex items-center gap-1">
-                                        <span className="text-sm font-bold text-brand-blue/70 uppercase tracking-wider">Your Share:</span>
+                                    <span className="text-sm sm:text-xl font-bold text-brand-blue bg-brand-blue/5 px-2 sm:px-3 py-1 rounded-full border border-brand-blue/10 flex items-center gap-1">
+                                        <span className="text-[10px] sm:text-sm font-bold text-brand-blue/70 uppercase tracking-wider">Your Share:</span>
                                         {symbol}{formatAmount(userShare)}
                                     </span>
                                 )}
@@ -282,14 +282,14 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                             <Users size={18} /> {data.participants.length} Participants • <Receipt size={18} /> {data.expenses.length} Expenses
                         </p>
                     </div>
-                    <div className="flex flex-wrap gap-4 w-full md:w-auto">
+                    <div className="flex flex-wrap gap-3 w-full md:w-auto">
                         {isOwner && (
                             <div className="flex gap-2 flex-1 md:flex-none">
-                                <Button variant="secondary" onClick={() => setShowLogModal(true)} className="flex-1 md:flex-none py-2 px-3 sm:py-3 sm:px-4 text-sm sm:text-base">
-                                    <Clock size={18} />
+                                <Button variant="secondary" onClick={() => setShowLogModal(true)} className="flex-1 md:flex-none py-2 px-4 shadow-sm">
+                                    <Clock size={18} /> <span className="text-sm font-bold">Activity</span>
                                 </Button>
-                                <Button variant="secondary" onClick={() => setShowShareModal(true)} className="flex-1 md:flex-none py-2 px-3 sm:py-3 sm:px-4 text-sm sm:text-base">
-                                    <Share2 size={18} /> <span className="hidden xs:inline">Share</span>
+                                <Button variant="secondary" onClick={() => setShowShareModal(true)} className="flex-1 md:flex-none py-2 px-4 shadow-sm">
+                                    <Share2 size={18} /> <span className="text-sm font-bold">Share</span>
                                 </Button>
                             </div>
                         )}
@@ -297,11 +297,11 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                         {
                             canEdit && (
                                 <div className="flex gap-2 flex-1 md:flex-none">
-                                    <Button variant="secondary" onClick={(e: React.MouseEvent) => { e.stopPropagation(); setEditingPart(null); setNewPartName(''); setShowAddPart(true); }} className="flex-1 md:flex-none py-2 px-3 sm:py-3 sm:px-4 text-sm sm:text-base">
-                                        <Users size={16} /> <span className="hidden xs:inline">People</span>
+                                    <Button variant="secondary" onClick={(e: React.MouseEvent) => { e.stopPropagation(); setEditingPart(null); setNewPartName(''); setShowAddPart(true); }} className="flex-1 md:flex-none py-2 px-4 shadow-sm">
+                                        <Users size={18} /> <span className="text-sm font-bold">People</span>
                                     </Button>
-                                    <Button onClick={(e: React.MouseEvent) => { e.stopPropagation(); setEditingExpense(null); setShowAddExp(true); }} className="flex-1 md:flex-none py-2 px-3 sm:py-3 sm:px-4 text-sm sm:text-base">
-                                        <Plus size={16} /> <span className="hidden xs:inline">Expense</span>
+                                    <Button onClick={(e: React.MouseEvent) => { e.stopPropagation(); setEditingExpense(null); setShowAddExp(true); }} className="flex-1 md:flex-none py-2 px-4 shadow-sm">
+                                        <Plus size={18} /> <span className="text-sm font-bold truncate">Add Expense</span>
                                     </Button>
                                 </div>
                             )
@@ -452,39 +452,41 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6"> Spending Summary </h3>
-                                    <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden overflow-x-auto">
-                                        <table className="w-full text-sm text-left min-w-[500px]">
-                                            <thead className="bg-gray-50 dark:bg-gray-750 border-b border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 font-bold">
-                                                <tr>
-                                                    <th className="px-6 py-4"> Person </th>
-                                                    <th className="px-6 py-4 text-right"> Paid </th>
-                                                    <th className="px-6 py-4 text-right"> Share </th>
-                                                    <th className="px-6 py-4 text-right"> Net </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                                                {
-                                                    data.participants.map(p => {
-                                                        const stats = settlementData.stats[p.id] || { paid: 0, share: 0, received: 0 };
-                                                        const net = stats.paid - stats.share - (stats.received || 0);
-                                                        const isPositive = net > 0.01;
-                                                        const isNegative = net < -0.01;
-                                                        const absNet = Math.abs(net);
+                                    <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full text-sm text-left min-w-[500px]">
+                                                <thead className="bg-gray-50 dark:bg-gray-750 border-b border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 font-bold">
+                                                    <tr>
+                                                        <th className="px-6 py-4"> Person </th>
+                                                        <th className="px-6 py-4 text-right"> Paid </th>
+                                                        <th className="px-6 py-4 text-right"> Share </th>
+                                                        <th className="px-6 py-4 text-right"> Net </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                                                    {
+                                                        data.participants.map(p => {
+                                                            const stats = settlementData.stats[p.id] || { paid: 0, share: 0, received: 0 };
+                                                            const net = stats.paid - stats.share - (stats.received || 0);
+                                                            const isPositive = net > 0.01;
+                                                            const isNegative = net < -0.01;
+                                                            const absNet = Math.abs(net);
 
-                                                        return (
-                                                            <tr key={p.id}>
-                                                                <td className="px-6 py-4 font-bold text-gray-900 dark:text-white"> {p.name} </td>
-                                                                <td className="px-6 py-4 text-right text-gray-600 dark:text-gray-400 font-medium"> {symbol} {formatAmount(stats.paid)} </td>
-                                                                <td className="px-6 py-4 text-right text-gray-600 dark:text-gray-400 font-medium"> {symbol} {formatAmount(stats.share)} </td>
-                                                                <td className={`px-6 py-4 text-right font-bold ${isPositive ? 'text-brand-green' : isNegative ? 'text-brand-orange' : 'text-gray-400'}`}>
-                                                                    {isNegative ? '- ' : isPositive ? '+ ' : ''}{symbol} {formatAmount(absNet)}
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })
-                                                }
-                                            </tbody>
-                                        </table>
+                                                            return (
+                                                                <tr key={p.id}>
+                                                                    <td className="px-6 py-4 font-bold text-gray-900 dark:text-white"> {p.name} </td>
+                                                                    <td className="px-6 py-4 text-right text-gray-600 dark:text-gray-400 font-medium"> {symbol} {formatAmount(stats.paid)} </td>
+                                                                    <td className="px-6 py-4 text-right text-gray-600 dark:text-gray-400 font-medium"> {symbol} {formatAmount(stats.share)} </td>
+                                                                    <td className={`px-6 py-4 text-right font-bold ${isPositive ? 'text-brand-green' : isNegative ? 'text-brand-orange' : 'text-gray-400'}`}>
+                                                                        {isNegative ? '- ' : isPositive ? '+ ' : ''}{symbol} {formatAmount(absNet)}
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -500,12 +502,12 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                                                 data.expenses.filter(e => e.isPayment).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map(pay => (
                                                     <div key={pay.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm opacity-90 hover:opacity-100 transition-opacity gap-4">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="p-2 bg-brand-green/10 rounded-full text-brand-green shrink-0">
-                                                                <CheckCircle size={18} />
+                                                            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 border border-brand-green/20">
+                                                                <img src={getCategoryStyles('Payment').gif} alt="Settled" className="w-full h-full object-cover" />
                                                             </div>
                                                             <div className="text-sm">
                                                                 <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                                                    <span className="font-bold text-gray-900 dark:text-white"> {data.participants.find(p => p.id === pay.paidBy)?.name} </span>
+                                                                    <span className="font-bold text-gray-900 dark:text-white"> {data.participants.find(p => pay.paidBy.includes(p.id))?.name} </span>
                                                                     <ArrowRight size={14} className="text-gray-400" />
                                                                     <span className="font-bold text-gray-900 dark:text-white"> {data.participants.find(p => p.id === (pay.splitAmong || [])[0])?.name} </span>
                                                                 </div>
@@ -589,7 +591,7 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                                 </h3>
                                 <div className="mb-8">
                                     <p className="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1"> Total Paid  </p>
-                                    <p className="text-4xl font-extrabold text-brand-blue mb-2"> {symbol} {formatAmount(analyticsData.totalTripCost)} </p>
+                                    <p className="text-3xl sm:text-4xl font-extrabold text-brand-blue mb-2"> {symbol} {formatAmount(analyticsData.totalTripCost)} </p>
                                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-blue/5 text-brand-orange rounded-full border border-brand-blue/10">
                                         <div className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse" />
                                         <p className="text-[10px] font-bold uppercase tracking-widest"> Amount spent initially/Onspot </p>
@@ -652,8 +654,8 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                                                 <div key={i} className="space-y-6">
                                                     <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
                                                         <div className="flex items-center gap-3">
-                                                            <div className={`p-2.5 rounded-xl ${styles.bg} ${styles.color}`}>
-                                                                <CatIcon size={24} />
+                                                            <div className={`w-10 h-10 rounded-xl overflow-hidden shadow-sm ${styles.bg}`}>
+                                                                <img src={styles.gif} alt={cat.category} className="w-full h-full object-cover" />
                                                             </div>
                                                             <div>
                                                                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 leading-none mb-1.5"> {cat.category} </p>
