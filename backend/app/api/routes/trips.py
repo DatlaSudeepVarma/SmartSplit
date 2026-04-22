@@ -54,15 +54,24 @@ def calculate_analytics(participants: List[ParticipantModel], expenses: List[Exp
     
     for e in expenses:
         if e.is_payment: continue
-        paid_totals[e.paid_by] += e.amount
+        
+        # Handle multiple payers
+        try:
+            payers = json.loads(e.paid_by) if e.paid_by.startswith('[') else [e.paid_by]
+        except:
+            payers = [e.paid_by]
+            
+        payer_share = e.amount / len(payers)
+        for pid in payers:
+            paid_totals[pid] += payer_share
+            payer_categories[pid][e.category] += payer_share
+
         split_list = json.loads(e.split_among) if e.split_among else []
         if split_list:
             share = e.amount / len(split_list)
             for pid in split_list:
                 share_totals[pid] += share
                 participant_indiv_cat_stats[pid][e.category] += share
-        
-        payer_categories[e.paid_by][e.category] += e.amount
 
     category_stats = []
     for cat, total in cat_sums.items():
@@ -117,16 +126,29 @@ def calculate_settlements(participants: List[ParticipantModel], expenses: List[E
 
     for e in expenses:
         if e.is_payment:
+            try:
+                payers = json.loads(e.paid_by) if e.paid_by.startswith('[') else [e.paid_by]
+            except:
+                payers = [e.paid_by]
+            
             target_ids = json.loads(e.split_among) if e.split_among else []
-            if target_ids:
+            if target_ids and payers:
+                from_id = payers[0]
                 to_id = target_ids[0]
-                balances[e.paid_by] += e.amount
+                balances[from_id] += e.amount
                 balances[to_id] -= e.amount
-                stats[e.paid_by]["received"] += e.amount
+                stats[from_id]["received"] += e.amount
             continue
 
-        balances[e.paid_by] += e.amount
-        stats[e.paid_by]["paid"] += e.amount
+        try:
+            payers = json.loads(e.paid_by) if e.paid_by.startswith('[') else [e.paid_by]
+        except:
+            payers = [e.paid_by]
+        
+        payer_share = e.amount / len(payers)
+        for pid in payers:
+            balances[pid] += payer_share
+            stats[pid]["paid"] += payer_share
         
         split_list = json.loads(e.split_among) if e.split_among else []
         if split_list:
@@ -196,6 +218,21 @@ def create_trip(payload: CreateTripRequest, db: Session = Depends(get_db), curre
     return new_trip
 
 
+@router.patch("/{trip_id}")
+def update_trip(trip_id: str, payload: UpdateTripRequest, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> None:
+    trip = db.query(TripModel).filter(TripModel.id == trip_id).first()
+    if not trip or trip.owner_id != current_user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to update this trip")
+    
+    if payload.name is not None: trip.name = payload.name
+    if payload.icon is not None: trip.icon = payload.icon
+    if payload.custom_image is not None: trip.custom_image = payload.custom_image
+    if payload.currency is not None: trip.currency = payload.currency
+    
+    db.commit()
+    return None
+
+
 @router.get("/{trip_id}/view", response_model=TripDetailsView)
 def trip_view(trip_id: str, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> TripDetailsView:
     trip_model = db.query(TripModel).filter(TripModel.id == trip_id).first()
@@ -222,7 +259,7 @@ def trip_view(trip_id: str, db: Session = Depends(get_db), current_user_id: str 
             "amount": e.amount,
             "date": e.date,
             "category": e.category,
-            "paid_by": e.paid_by,
+            "paid_by": json.loads(e.paid_by) if e.paid_by and e.paid_by.startswith('[') else [e.paid_by],
             "split_among": split_among,
             "is_payment": e.is_payment
         }
@@ -253,6 +290,10 @@ def trip_view(trip_id: str, db: Session = Depends(get_db), current_user_id: str 
 
 @router.post("/{trip_id}/participants", response_model=Participant)
 def add_participant(trip_id: str, payload: CreateParticipantRequest, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> Participant:
+    trip = db.query(TripModel).filter(TripModel.id == trip_id).first()
+    if not trip or trip.owner_id != current_user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to add participants to this trip")
+    
     new_participant = ParticipantModel(trip_id=trip_id, name=payload.name)
     db.add(new_participant)
     db.commit()
@@ -262,6 +303,10 @@ def add_participant(trip_id: str, payload: CreateParticipantRequest, db: Session
 
 @router.post("/{trip_id}/expenses", response_model=Expense)
 def add_expense(trip_id: str, payload: dict, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> Expense:
+    trip = db.query(TripModel).filter(TripModel.id == trip_id).first()
+    if not trip or trip.owner_id != current_user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to add expenses to this trip")
+
     expense_data = payload.get("expense", payload)
     
     date_val = datetime.utcnow()
@@ -278,7 +323,7 @@ def add_expense(trip_id: str, payload: dict, db: Session = Depends(get_db), curr
         amount=float(expense_data.get("amount", 0)),
         date=date_val,
         category=expense_data.get("category", "Others"),
-        paid_by=expense_data.get("paidBy"),
+        paid_by=json.dumps(expense_data.get("paidBy", [])),
         split_among=json.dumps(expense_data.get("splitAmong", [])),
         is_payment=expense_data.get("isPayment", False)
     )
@@ -293,13 +338,43 @@ def add_expense(trip_id: str, payload: dict, db: Session = Depends(get_db), curr
         "amount": new_expense.amount,
         "date": new_expense.date,
         "category": new_expense.category,
-        "paid_by": new_expense.paid_by,
-        "split_among": json.loads(new_expense.split_among),
+        "paid_by": json.loads(new_expense.paid_by) if new_expense.paid_by and new_expense.paid_by.startswith('[') else [new_expense.paid_by],
+        "split_among": json.loads(new_expense.split_among) if new_expense.split_among else [],
         "is_payment": new_expense.is_payment
     }
 
+@router.patch("/{trip_id}/expenses/{expense_id}")
+def update_expense(trip_id: str, expense_id: str, payload: UpdateExpenseRequest, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> None:
+    trip = db.query(TripModel).filter(TripModel.id == trip_id).first()
+    if not trip or trip.owner_id != current_user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to modify this trip")
+    
+    exp = db.query(ExpenseModel).filter(ExpenseModel.id == expense_id).first()
+    if not exp:
+        raise HTTPException(status_code=404, detail="Expense not found")
+    
+    data = payload.data
+    if "description" in data: exp.description = data["description"]
+    if "amount" in data: exp.amount = float(data["amount"])
+    if "category" in data: exp.category = data["category"]
+    if "date" in data: 
+        try:
+            exp.date = datetime.fromisoformat(data["date"].replace('Z', '+00:00'))
+        except:
+            pass
+    if "paidBy" in data: exp.paid_by = json.dumps(data["paidBy"])
+    if "splitAmong" in data: exp.split_among = json.dumps(data["splitAmong"])
+    if "isPayment" in data: exp.is_payment = data["isPayment"]
+    
+    db.commit()
+    return None
+
 @router.delete("/{trip_id}/participants/{participant_id}")
 def remove_participant(trip_id: str, participant_id: str, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> None:
+    trip = db.query(TripModel).filter(TripModel.id == trip_id).first()
+    if not trip or trip.owner_id != current_user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to modify this trip")
+
     part = db.query(ParticipantModel).filter(ParticipantModel.id == participant_id).first()
     if part:
         db.delete(part)
@@ -308,6 +383,10 @@ def remove_participant(trip_id: str, participant_id: str, db: Session = Depends(
 
 @router.delete("/{trip_id}/expenses/{expense_id}")
 def delete_expense(trip_id: str, expense_id: str, db: Session = Depends(get_db), current_user_id: str = Depends(get_current_user_id)) -> None:
+    trip = db.query(TripModel).filter(TripModel.id == trip_id).first()
+    if not trip or trip.owner_id != current_user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to modify this trip")
+
     exp = db.query(ExpenseModel).filter(ExpenseModel.id == expense_id).first()
     if exp:
         db.delete(exp)

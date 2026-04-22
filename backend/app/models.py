@@ -17,6 +17,14 @@ class User(Base):
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     login_count: Mapped[int] = mapped_column(Integer, default=0)
     total_expenses: Mapped[float] = mapped_column(Float, default=0.0)
+    phone_number: Mapped[str | None] = mapped_column(String, nullable=True)
+    profile_image_url: Mapped[str | None] = mapped_column(String, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    last_login: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    default_currency: Mapped[str] = mapped_column(String, default="INR")
+    timezone: Mapped[str] = mapped_column(String, default="UTC")
+    language: Mapped[str] = mapped_column(String, default="en")
+    notification_settings: Mapped[str | None] = mapped_column(Text, nullable=True) # JSON string
 
     # Relationships
     trips = relationship("Trip", back_populates="owner")
