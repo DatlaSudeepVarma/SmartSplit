@@ -38,7 +38,7 @@ class Expense(APIModel):
     amount: float
     date: datetime
     category: str
-    paid_by: str
+    paid_by: list[str]
     split_among: list[str] | None = None
     is_payment: bool | None = None
 

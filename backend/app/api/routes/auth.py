@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -38,6 +39,7 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)) -> AuthResponse:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     user.login_count += 1
+    user.last_login = datetime.utcnow()
     db.add(user)
     db.commit()
     db.refresh(user)

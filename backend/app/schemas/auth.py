@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from pydantic import BaseModel, EmailStr, field_validator
 
 from app.schemas.common import APIModel
@@ -30,10 +31,13 @@ class User(APIModel):
     id: str
     name: str
     email: EmailStr
+    profile_image_url: str | None = None
     monthly_salary: float | None = None
     is_admin: bool = False
     login_count: int = 0
     total_expenses: float = 0.0
+    created_at: datetime
+    last_login: datetime | None = None
 
 
 class AuthResponse(APIModel):
