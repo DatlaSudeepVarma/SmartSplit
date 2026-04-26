@@ -8,6 +8,8 @@ import ProtectedRoute from '../../components/auth/ProtectedRoute';
 
 const ActivitiesPage = () => {
     const router = useRouter();
+    //
+
 
     return (
         <ProtectedRoute>
