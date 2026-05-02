@@ -5,17 +5,30 @@
 @theme {
   --color-brand-blue: #3b82f6;
   --color-brand-skyblue: #0ea5e9;
-  --color-brand-green: #22c55e;
+  --color-brand-green: #f96b00;
   --color-brand-orange: #f97316;
   --color-brand-red: #ef4444;
   --color-gray-750: #2b3544;
 
-  --font-mier: var(--font-outfit);
+  /* Geometric sans (Montserrat) — same family class as typical “Shop Now” boutique CTAs */
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-mier: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
+
+  /*
+    Montserrat is applied via next/font `className` on <body> (layout.tsx) so it wins over
+    Tailwind preflight’s html font-family. Keep --font-montserrat on <html> for var(--font-montserrat) in @theme.
+  */
+  html {
+    letter-spacing: -0.02em;
+  }
+
   body {
-    @apply bg-gray-50 dark:bg-gray-950 transition-colors duration-200 font-sans;
+    @apply bg-gray-50 antialiased dark:bg-gray-950;
+    @apply transition-colors duration-200;
   }
 }
 
@@ -50,11 +63,12 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
 
   .font-mier {
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   }
 }

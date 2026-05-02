@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Suspense } from "react";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import Navbar from "../components/layout/Navbar";
+import AppShell from "../components/layout/AppShell";
 import Footer from "../components/layout/Footer";
 import Loader from "../components/layout/Loader";
 import SmoothScroll from "../components/ui/SmoothScroll";
 import ScrollProgressBar from "../components/ui/ScrollProgressBar";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "SmartSplit - Bill Splitting App",
@@ -22,16 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} ${outfit.variable} antialiased`}>
+    <html lang="en" className={montserrat.variable}>
+      <body className={montserrat.className}>
         <Providers>
           <SmoothScroll>
             <ScrollProgressBar />
             <Loader />
-            <Navbar />
-            <main className="min-h-screen pt-12 sm:pt-16">
-              {children}
-            </main>
+            <Suspense fallback={<main className="min-h-screen pt-14 sm:pt-16">{children}</main>}>
+              <AppShell>{children}</AppShell>
+            </Suspense>
             <Footer />
           </SmoothScroll>
         </Providers>

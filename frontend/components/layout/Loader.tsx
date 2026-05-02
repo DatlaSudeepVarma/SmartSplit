@@ -1,19 +1,22 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SplashContext } from '../../context/AppContext';
 
 const Loader = () => {
     const [loading, setLoading] = useState(true);
+    const { finishSplash } = useContext(SplashContext);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false);
+            finishSplash();
         }, 3000); // GIF loads for 3 seconds
 
         return () => clearTimeout(timer);
-    }, []);
+    }, [finishSplash]);
 
     return (
         <AnimatePresence>
@@ -24,7 +27,7 @@ const Loader = () => {
                         opacity: 0,
                         transition: { duration: 0.8, ease: "easeInOut" }
                     }}
-                    className="fixed inset-0 z-[100] flex items-center justify-center bg-white"
+                    className="fixed inset-0 z-[250] flex items-center justify-center bg-white dark:bg-gray-950"
                 >
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
