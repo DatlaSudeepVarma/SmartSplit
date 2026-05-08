@@ -58,7 +58,17 @@ export type TripDetailsView = {
 
 export type AuthResponse = { user: UserData; token: string };
 
-export type UserStats = { totalTracked: number; tripCount: number };
+export type PendingModuleStat = {
+    moduleName: string;
+    pendingCount: number;
+};
+
+export type UserStats = {
+    totalTracked: number;
+    tripCount: number;
+    pendingSettlements: number;
+    pendingByModule: PendingModuleStat[];
+};
 
 export type UserProfileData = {
     name: string;
