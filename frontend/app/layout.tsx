@@ -4,7 +4,6 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import AppShell from "../components/layout/AppShell";
-import Footer from "../components/layout/Footer";
 import Loader from "../components/layout/Loader";
 import SmoothScroll from "../components/ui/SmoothScroll";
 import ScrollProgressBar from "../components/ui/ScrollProgressBar";
@@ -35,7 +34,6 @@ export default function RootLayout({
             <Suspense fallback={<main className="min-h-screen pt-14 sm:pt-16">{children}</main>}>
               <AppShell>{children}</AppShell>
             </Suspense>
-            <Footer />
           </SmoothScroll>
         </Providers>
       </body>
