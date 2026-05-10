@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import AppShell from "../components/layout/AppShell";
 import Loader from "../components/layout/Loader";
 import SmoothScroll from "../components/ui/SmoothScroll";
 import ScrollProgressBar from "../components/ui/ScrollProgressBar";
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "SmartSplit - Bill Splitting App",
@@ -25,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={montserrat.variable}>
-      <body className={montserrat.className}>
+    <html lang="en">
+      <body>
         <Providers>
           <SmoothScroll>
             <ScrollProgressBar />
