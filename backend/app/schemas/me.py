@@ -4,6 +4,13 @@ from app.schemas.common import APIModel
 class UserStats(APIModel):
     total_tracked: float
     trip_count: int
+    pending_settlements: int
+    pending_by_module: list["PendingModuleStat"]
+
+
+class PendingModuleStat(APIModel):
+    module_name: str
+    pending_count: int
 
 
 class TripSummary(APIModel):
