@@ -163,7 +163,7 @@ const HeroSection = () => {
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => {
-                            document.getElementById('featured')?.scrollIntoView({ behavior: 'smooth' });
+                            document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
                         }}
                         className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-5 py-3.5 text-sm font-semibold text-gray-900 shadow-sm backdrop-blur-sm transition-colors hover:border-gray-400 hover:bg-gray-50 dark:border-white/20 dark:bg-white/5 dark:text-[#f2f2ed] dark:hover:border-white/35 dark:hover:bg-white/10 sm:text-base"
                     >

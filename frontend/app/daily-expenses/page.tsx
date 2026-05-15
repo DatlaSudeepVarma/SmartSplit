@@ -40,6 +40,7 @@ import AddDailyExpenseModal from '../../components/modals/AddDailyExpenseModal';
 import SyncSourcesModal from '../../components/modals/SyncSourcesModal';
 import { formatAmount } from '../../lib/formatters';
 import Link from 'next/link';
+import ProtectedRoute from '../../components/auth/ProtectedRoute';
 
 export default function DailyExpensesPage() {
     const { user } = useContext(AuthContext);
@@ -147,10 +148,15 @@ export default function DailyExpensesPage() {
     };
 
     if (isLoading) {
-        return <div className="min-h-screen flex items-center justify-center">Loading Daily Expenses...</div>;
+        return (
+            <ProtectedRoute>
+                <div className="min-h-screen flex items-center justify-center">Loading Daily Expenses...</div>
+            </ProtectedRoute>
+        );
     }
 
     return (
+        <ProtectedRoute>
         <div className="p-4 sm:p-10 max-w-7xl mx-auto pb-32">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                 <div>
@@ -502,5 +508,6 @@ export default function DailyExpensesPage() {
                 isLoading={isSyncing}
             />
         </div>
+        </ProtectedRoute>
     );
 }
