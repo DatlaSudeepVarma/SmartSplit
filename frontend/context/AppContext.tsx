@@ -14,7 +14,8 @@ export const AuthContext = createContext({
     setGuestName: (_name: string | null) => { void _name; },
     login: (_u: UserData, _t: string) => { void _u; void _t; },
     logout: () => { },
-    isAuthenticated: false
+    isAuthenticated: false,
+    authReady: false,
 });
 
 /** Initial GIF loader must call `finishSplash` when done so the navbar can appear. */
@@ -23,17 +24,22 @@ export const SplashContext = createContext({
     finishSplash: () => {},
 });
 
+function clearStoredSession() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+}
+
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<UserData | null>(null);
     const [guestName, setGuestName] = useState<string | null>(null);
     const [currency, setCurrency] = useState<Currency>('INR');
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [splashFinished, setSplashFinished] = useState(false);
+    const [authReady, setAuthReady] = useState(false);
     const finishSplash = useCallback(() => setSplashFinished(true), []);
 
     const logout = useCallback(() => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        clearStoredSession();
         setUser(null);
         setGuestName(null);
     }, []);
@@ -48,31 +54,41 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const rawUser = localStorage.getItem('user');
+        let cancelled = false;
 
-        if (!token) {
-            if (rawUser) localStorage.removeItem('user');
-            setUser(null);
-            return;
-        }
+        const restoreSession = async () => {
+            const token = localStorage.getItem('token');
+            const rawUser = localStorage.getItem('user');
 
-        if (rawUser) {
-            try {
-                setUser(JSON.parse(rawUser) as UserData);
-            } catch {
-                localStorage.removeItem('user');
-                setUser(null);
-            }
-        }
-
-        getUserStats('')
-            .catch((e: unknown) => {
-                if (e instanceof ApiError && (e.status === 401 || e.status === 403)) {
-                    logout();
+            if (!token || !rawUser) {
+                clearStoredSession();
+                if (!cancelled) {
+                    setUser(null);
+                    setAuthReady(true);
                 }
-            });
-    }, [logout]);
+                return;
+            }
+
+            try {
+                await getUserStats('');
+                const parsed = JSON.parse(rawUser) as UserData;
+                if (!cancelled) setUser(parsed);
+            } catch (e) {
+                if (e instanceof ApiError && (e.status === 401 || e.status === 403)) {
+                    clearStoredSession();
+                }
+                if (!cancelled) setUser(null);
+            } finally {
+                if (!cancelled) setAuthReady(true);
+            }
+        };
+
+        restoreSession();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     useEffect(() => {
         document.documentElement.className = theme;
@@ -82,6 +98,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem('user', JSON.stringify(u));
         localStorage.setItem('token', t);
         setUser(u);
+        setAuthReady(true);
     };
 
     const toggleTheme = () => {
@@ -90,10 +107,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem('theme', newTheme);
     };
 
+    const isAuthenticated = authReady && !!user;
+
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>
             <CurrencyContext.Provider value={{ currency, setCurrency, symbol: CURRENCIES[currency] }}>
-                <AuthContext.Provider value={{ user, guestName, setGuestName, login, logout, isAuthenticated: !!user }}>
+                <AuthContext.Provider value={{ user, guestName, setGuestName, login, logout, isAuthenticated, authReady }}>
                     <SplashContext.Provider value={{ splashFinished, finishSplash }}>
                         {children}
                     </SplashContext.Provider>

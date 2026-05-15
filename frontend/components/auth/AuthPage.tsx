@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
+import { m } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
+import { fadeUp } from '../../lib/motion';
 import { AuthContext } from '../../context/AppContext';
 import { api } from '../../lib/api';
 import Card from '../ui/Card';
@@ -11,7 +13,7 @@ import Button from '../ui/Button';
 import SmartSplitLogo from '../ui/SmartSplitLogo';
 
 const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
-    const { login, isAuthenticated } = useContext(AuthContext);
+    const { login, isAuthenticated, authReady } = useContext(AuthContext);
     const router = useRouter();
     const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
     const [showPass, setShowPass] = useState(false);
@@ -21,10 +23,10 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
     const [success, setSuccess] = useState('');
 
     useEffect(() => {
-        if (isAuthenticated) {
-            router.push('/dashboard');
+        if (authReady && isAuthenticated) {
+            router.replace('/dashboard');
         }
-    }, [isAuthenticated, router]);
+    }, [authReady, isAuthenticated, router]);
 
     useEffect(() => {
         setFormData({ name: '', email: '', password: '', confirmPassword: '' });
@@ -100,8 +102,9 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
     const toggleConfirmPass = () => setShowConfirmPass(!showConfirmPass);
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 transition-colors">
-            <Card className="w-full max-w-lg border border-gray-100 dark:border-gray-800 shadow-2xl p-6 sm:p-10">
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 transition-colors dark:bg-gray-900 sm:p-6">
+            <m.div initial="hidden" animate="visible" variants={fadeUp} className="w-full max-w-lg">
+            <Card className="w-full border border-gray-100 p-6 shadow-2xl dark:border-gray-800 sm:p-10">
                 <div className="text-center mb-10">
                     <div className="inline-flex mb-6">
                         <SmartSplitLogo />
@@ -192,6 +195,7 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
                     </button>
                 </div>
             </Card>
+            </m.div>
         </div>
     );
 };

@@ -11,6 +11,7 @@ import { Trip } from '../../types';
 import Button from '../../components/ui/Button';
 import TripCard from '../../components/cards/TripCard';
 import AddTripModal from '../../components/modals/AddTripModal';
+import ProtectedRoute from '../../components/auth/ProtectedRoute';
 
 const TripsList = () => {
     const { user } = useContext(AuthContext);
@@ -56,6 +57,7 @@ const TripsList = () => {
     };
 
     return (
+        <ProtectedRoute>
         <div className="p-4 sm:p-8 max-w-[1600px] mx-auto min-h-screen">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
                 <div>
@@ -132,6 +134,7 @@ const TripsList = () => {
                 editingTrip={editingTrip}
             />
         </div>
+        </ProtectedRoute>
     );
 };
 

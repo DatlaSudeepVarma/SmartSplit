@@ -1,20 +1,30 @@
 "use client";
 
 import React, { useContext, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { AuthContext } from '../../context/AppContext';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-    const { user } = useContext(AuthContext);
+    const { user, authReady } = useContext(AuthContext);
     const router = useRouter();
+    const pathname = usePathname();
 
     useEffect(() => {
-        if (!user) {
-            router.push('/login');
+        if (authReady && !user) {
+            const loginUrl = pathname ? `/login?next=${encodeURIComponent(pathname)}` : '/login';
+            router.replace(loginUrl);
         }
-    }, [user, router]);
+    }, [authReady, user, router, pathname]);
 
-    return user ? <>{children}</> : null;
+    if (!authReady) {
+        return null;
+    }
+
+    if (!user) {
+        return null;
+    }
+
+    return <>{children}</>;
 };
 
 export default ProtectedRoute;

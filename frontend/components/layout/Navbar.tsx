@@ -22,7 +22,7 @@ type NavbarProps = {
 const Navbar = ({ variant = "fixed" }: NavbarProps) => {
     const isInset = variant === "heroInset";
     const isContained = variant === "contained";
-    const { user } = useContext(AuthContext);
+    const { user, isAuthenticated } = useContext(AuthContext);
     const { theme, toggleTheme } = useContext(ThemeContext);
     const { currency, setCurrency } = useContext(CurrencyContext);
     const { splashFinished } = useContext(SplashContext);
@@ -42,7 +42,7 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
         return () => window.removeEventListener('scroll', onScroll);
     }, [onScroll]);
 
-    const goHome = () => (user ? router.push('/dashboard') : router.push('/'));
+    const goHome = () => (isAuthenticated ? router.push('/dashboard') : router.push('/'));
 
     const iconBtn =
         'rounded-md p-1.5 text-gray-600 transition-all hover:bg-black/5 hover:text-brand-blue dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white';
@@ -156,7 +156,7 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
                         {/* Right: theme + sign in / account */}
                         <div className="flex min-w-0 max-w-[42%] flex-1 items-center justify-end gap-0.5 sm:max-w-none sm:gap-1">
                             <div className="hidden items-center sm:flex">{themeToggle}</div>
-                            {user ? (
+                            {isAuthenticated && user ? (
                                 <>
                                     {user.isAdmin && (
                                         <button
@@ -234,7 +234,7 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
                                 <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Currency</span>
                                 {currencySelect}
                             </div>
-                            {!user && (
+                            {!isAuthenticated && (
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -246,7 +246,7 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
                                     Sign in
                                 </button>
                             )}
-                            {user && !user.isAdmin && (
+                            {isAuthenticated && user && !user.isAdmin && (
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -258,7 +258,7 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
                                     Profile
                                 </button>
                             )}
-                            {user?.isAdmin && (
+                            {isAuthenticated && user?.isAdmin && (
                                 <button
                                     type="button"
                                     onClick={() => {
