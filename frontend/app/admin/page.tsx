@@ -17,6 +17,8 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  //
+
   const fetchUsers = async () => {
     try {
       const data = await adminApi.getUsers();
@@ -59,8 +61,8 @@ export default function AdminPanel() {
               ADMIN CONTROL
             </h1>
           </div>
-          <Button 
-            variant="danger" 
+          <Button
+            variant="danger"
             onClick={handleLogout}
             className="w-full sm:w-auto px-8 py-3 rounded-2xl shadow-xl shadow-brand-orange/20 font-bold flex items-center justify-center gap-2"
           >
@@ -130,9 +132,8 @@ export default function AdminPanel() {
                       <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-300 group">
                         <td className="px-10 py-8">
                           <div className="flex items-center gap-5">
-                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg transform rotate-3 transition-transform group-hover:rotate-0 ${
-                              user.isAdmin 
-                                ? 'bg-gradient-to-br from-purple-500 to-brand-blue text-white shadow-purple-500/20' 
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg transform rotate-3 transition-transform group-hover:rotate-0 ${user.isAdmin
+                                ? 'bg-gradient-to-br from-purple-500 to-brand-blue text-white shadow-purple-500/20'
                                 : 'bg-gradient-to-br from-gray-200 to-gray-300 dark:from-white/10 dark:to-white/20 text-gray-700 dark:text-white shadow-black/5'}`}>
                               {user.name.charAt(0).toUpperCase()}
                             </div>
@@ -156,20 +157,19 @@ export default function AdminPanel() {
                         <td className="px-10 py-8">
                           <div className="flex items-center gap-4">
                             <div className="w-full bg-gray-200 dark:bg-white/10 h-2 rounded-full overflow-hidden max-w-[80px]">
-                                <div className="bg-purple-500 h-full" style={{ width: `${Math.min(user.loginCount || 0 * 5, 100)}%` }}></div>
+                              <div className="bg-purple-500 h-full" style={{ width: `${Math.min(user.loginCount || 0 * 5, 100)}%` }}></div>
                             </div>
                             <span className="text-lg font-bold text-gray-600 dark:text-gray-300">{user.loginCount || 0}</span>
                           </div>
                         </td>
                         <td className="px-10 py-8 text-right">
-                          <button 
+                          <button
                             disabled={user.isAdmin}
                             onClick={() => handleDeleteUser(user.id)}
-                            className={`p-3 rounded-2xl transition-all duration-300 ${
-                              user.isAdmin 
-                                ? 'text-gray-300 dark:text-gray-700 cursor-not-allowed opacity-30' 
+                            className={`p-3 rounded-2xl transition-all duration-300 ${user.isAdmin
+                                ? 'text-gray-300 dark:text-gray-700 cursor-not-allowed opacity-30'
                                 : 'text-gray-400 hover:text-brand-orange hover:bg-brand-orange/10 bg-gray-100 dark:bg-white/5 active:scale-90 hover:shadow-lg shadow-brand-orange/5'
-                            }`}
+                              }`}
                             title={user.isAdmin ? "Cannot remove core admins" : "Remove user"}
                           >
                             <Trash2 size={24} strokeWidth={2.5} />
