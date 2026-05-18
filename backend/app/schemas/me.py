@@ -25,7 +25,7 @@ class TripSummary(APIModel):
 class UserProfileData(APIModel):
     name: str
     email: str
-    profile_image_url: str | None
+    profile_image_url: str | None = None
     phone_number: str | None
     default_currency: str
     timezone: str
