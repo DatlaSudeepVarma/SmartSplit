@@ -10,6 +10,7 @@ import { api } from '../../lib/api';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
+import { FlipButton } from '../ui/Text3DFlip';
 import SmartSplitLogo from '../ui/SmartSplitLogo';
 
 const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
@@ -187,12 +188,12 @@ const AuthPage = ({ mode }: { mode: 'login' | 'register' }) => {
 
                 <div className="mt-10 text-center text-base text-gray-600 dark:text-gray-400">
                     {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
-                    <button
+                    <FlipButton
                         onClick={() => router.push(mode === 'login' ? '/register' : '/login')}
                         className="text-brand-blue font-bold hover:underline transition-all"
                     >
                         {mode === 'login' ? 'Sign up' : 'Log in'}
-                    </button>
+                    </FlipButton>
                 </div>
             </Card>
             </m.div>

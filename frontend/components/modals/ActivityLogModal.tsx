@@ -3,6 +3,7 @@
 import React from 'react';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import Modal from '../ui/Modal';
+import { FlipButton } from '../ui/Text3DFlip';
 import Button from '../ui/Button';
 import { ChangeLog } from '../../types';
 
@@ -43,13 +44,13 @@ const ActivityLogModal = ({ isOpen, onClose, logs, onRevert, onRevertAll, isLoad
                                     </p>
                                 </div>
                             </div>
-                            <button
+                            <FlipButton
                                 onClick={() => onRevert(log.id)}
                                 disabled={isLoading}
                                 className="text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs font-bold px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-white dark:hover:bg-gray-700 transition-colors"
                             >
                                 Undo
-                            </button>
+                            </FlipButton>
                         </div>
                     ))
                 )}

@@ -33,6 +33,7 @@ import { api } from '../../lib/api';
 import { DailyStats } from '../../lib/api/types';
 import { DailyExpense, DailyCategory } from '../../types';
 import Button from '../../components/ui/Button';
+import { FlipButton } from '../../components/ui/Text3DFlip';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Badge from '../../components/ui/Badge';
@@ -203,12 +204,12 @@ export default function DailyExpensesPage() {
                         <div className="flex items-center gap-3">
                             <h3 className="text-sm font-black uppercase tracking-widest text-gray-500">Financial Overview</h3>
                             {monthlySalary > 0 && !showSalaryInput && (
-                                <button
+                                <FlipButton
                                     onClick={() => setShowSalaryInput(true)}
                                     className="text-xs font-bold text-brand-blue hover:underline"
                                 >
                                     Update Salary
-                                </button>
+                                </FlipButton>
                             )}
                         </div>
                     </div>

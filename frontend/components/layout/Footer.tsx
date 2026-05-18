@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { m } from 'framer-motion';
 import { ArrowRight, Mail } from 'lucide-react';
 import SmartSplitLogo from '../ui/SmartSplitLogo';
+import { FlipMotionButton } from '../ui/Text3DFlip';
 import { fadeUp, staggerContainer, viewportOnce } from '../../lib/motion';
 
 const productLinks = [
@@ -40,16 +41,15 @@ const Footer = () => {
                         <p className="text-sm leading-relaxed text-white/55 sm:text-base">
                             The smartest way to split rent, trips, and everyday expenses — without spreadsheets or awkward follow-ups.
                         </p>
-                        <m.button
+                        <FlipMotionButton
                             type="button"
-                            whileHover={{ scale: 1.03, y: -2 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => router.push('/register')}
                             className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#d4ff00] px-5 py-2.5 text-sm font-bold text-gray-900"
                         >
                             Get started free
                             <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
-                        </m.button>
+                        </FlipMotionButton>
                     </m.div>
 
                     <m.div variants={fadeUp} custom={1}>
