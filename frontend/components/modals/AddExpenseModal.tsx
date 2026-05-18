@@ -6,6 +6,7 @@ import { AlertCircle, Tag, Check } from 'lucide-react';
 import Modal from '../ui/Modal';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
+import { FlipButton } from '../ui/Text3DFlip';
 import { Participant, Expense } from '../../types';
 import { CATEGORY_STYLES } from '../../lib/constants';
 import { CurrencyContext } from '../../context/AppContext';
@@ -200,7 +201,7 @@ const AddExpenseModal = ({ isOpen, onClose, participants, editingExpense, onSave
                             const Icon = style.icon;
                             const isSelected = form.category === name;
                             return (
-                                <button
+                                <FlipButton
                                     key={name}
                                     onClick={() => setForm({ ...form, category: name })}
                                     className={`flex items-center gap-3 px-4 py-2 rounded-2xl border-2 transition-all duration-300 ${isSelected
@@ -214,7 +215,7 @@ const AddExpenseModal = ({ isOpen, onClose, participants, editingExpense, onSave
                                     <span className={`text-sm font-bold ${isSelected ? 'text-brand-blue' : 'text-gray-500 dark:text-gray-400'}`}>
                                         {name}
                                     </span>
-                                </button>
+                                </FlipButton>
                             );
                         })}
                     </div>
@@ -227,7 +228,7 @@ const AddExpenseModal = ({ isOpen, onClose, participants, editingExpense, onSave
                         {participants.map(p => {
                             const isSelected = form.paidBy.includes(p.id);
                             return (
-                                <button
+                                <FlipButton
                                     key={p.id}
                                     onClick={() => togglePayer(p.id)}
                                     className={`group flex items-center gap-2.5 p-1.5 pr-4 rounded-full border-2 transition-all duration-300 ${isSelected
@@ -242,7 +243,7 @@ const AddExpenseModal = ({ isOpen, onClose, participants, editingExpense, onSave
                                         {p.name}
                                     </span>
                                     {isSelected && <div className="ml-1 w-2 h-2 rounded-full bg-brand-blue animate-pulse" />}
-                                </button>
+                                </FlipButton>
                             );
                         })}
                     </div>
@@ -252,15 +253,15 @@ const AddExpenseModal = ({ isOpen, onClose, participants, editingExpense, onSave
                 <motion.div variants={item}>
                     <div className="flex justify-between items-center mb-3 ml-1">
                         <label className="text-sm font-semibold text-gray-700 dark:text-gray-300"> Split Among </label>
-                        <button onClick={() => setSelectedSplit([])} className="text-xs font-bold text-brand-blue hover:underline bg-brand-blue/5 px-3 py-1 rounded-full">
+                        <FlipButton onClick={() => setSelectedSplit([])} className="text-xs font-bold text-brand-blue hover:underline bg-brand-blue/5 px-3 py-1 rounded-full">
                             Split Everyone
-                        </button>
+                        </FlipButton>
                     </div>
                     <div className="flex flex-wrap gap-2.5">
                         {participants.map(p => {
                             const isSelected = isParticipantSelected(p.id);
                             return (
-                                <button
+                                <FlipButton
                                     key={p.id}
                                     onClick={() => toggleSplit(p.id)}
                                     className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl border-2 transition-all duration-300 ${isSelected
@@ -272,7 +273,7 @@ const AddExpenseModal = ({ isOpen, onClose, participants, editingExpense, onSave
                                         {isSelected && <Check size={12} strokeWidth={4} />}
                                     </div>
                                     <span className={`text-sm font-bold ${isSelected ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300'}`}> {p.name} </span>
-                                </button>
+                                </FlipButton>
                             );
                         })}
                     </div>

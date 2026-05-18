@@ -5,6 +5,7 @@ import { m, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { fadeUp, staggerContainer, viewportOnce } from '../../lib/motion';
+import { FlipMotionButton } from '../ui/Text3DFlip';
 
 export default function LandingCTA() {
     const router = useRouter();
@@ -33,25 +34,23 @@ export default function LandingCTA() {
                     Free to try — create an account and set up your first trip or roommate group in minutes.
                 </m.p>
                 <m.div variants={fadeUp} custom={3} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                    <m.button
+                    <FlipMotionButton
                         type="button"
-                        whileHover={{ scale: 1.04, y: -3 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => router.push('/register')}
                         className="inline-flex items-center gap-2 rounded-full bg-brand-green px-8 py-4 text-sm font-bold text-gray-900 shadow-lg dark:bg-[#d4ff00] sm:text-base"
                     >
                         Create free account
                         <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
-                    </m.button>
-                    <m.button
+                    </FlipMotionButton>
+                    <FlipMotionButton
                         type="button"
-                        whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => router.push('/login')}
                         className="rounded-full border border-gray-300 px-8 py-4 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50 dark:border-white/20 dark:text-[#f2f2ed] dark:hover:bg-white/10 sm:text-base"
                     >
                         Sign in
-                    </m.button>
+                    </FlipMotionButton>
                 </m.div>
             </m.div>
         </section>

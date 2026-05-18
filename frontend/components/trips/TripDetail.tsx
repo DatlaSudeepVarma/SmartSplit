@@ -9,6 +9,7 @@ import { formatAmount, formatDateWithDay } from '../../lib/formatters';
 import { Trip, Participant, Expense, ChangeLog, Settlement, SharePermission } from '../../types';
 import { TripDetailsView } from '../../lib/api/types';
 import Button from '../ui/Button';
+import { FlipButton } from '../ui/Text3DFlip';
 import Modal from '../ui/Modal';
 import Badge from '../ui/Badge';
 import ShareModal from '../modals/ShareModal';
@@ -26,7 +27,7 @@ const PayerRow = ({ p, i, symbol, totalTripCost, shareAmount }: { p: { id: strin
 
     return (
         <div className="bg-gray-50 dark:bg-gray-750/50 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden transition-all duration-300">
-            <button
+            <FlipButton
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-start gap-4 sm:gap-20 p-4 text-left hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
             >
@@ -54,7 +55,7 @@ const PayerRow = ({ p, i, symbol, totalTripCost, shareAmount }: { p: { id: strin
                         <span className="text-brand-orange text-[11px]">({totalTripCost > 0 ? ((shareAmount / totalTripCost) * 100).toFixed(1) : 0}%)</span>
                     </div>
                 </div>
-            </button>
+            </FlipButton>
 
             {isExpanded && (
                 <div className="px-14 pb-5 pt-2 animate-in slide-in-from-top-2 duration-300">
@@ -336,18 +337,18 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                                             className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden py-2 animate-in fade-in zoom-in-95 duration-200"
                                             onClick={(e) => e.stopPropagation()}
                                         >
-                                            <button
+                                            <FlipButton
                                                 onClick={(e) => { e.stopPropagation(); setActiveMenuId(null); handleEditPart(p); }}
                                                 className="w-full text-left px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 flex items-center gap-3"
                                             >
                                                 <Edit2 size={16} /> Edit
-                                            </button>
-                                            <button
+                                            </FlipButton>
+                                            <FlipButton
                                                 onClick={(e) => { e.stopPropagation(); setActiveMenuId(null); handleRemovePart(p.id); }}
                                                 className="w-full text-left px-5 py-3 text-sm font-medium text-brand-orange hover:bg-brand-orange/10 flex items-center gap-3"
                                             >
                                                 <Trash2 size={16} /> Remove
-                                            </button>
+                                            </FlipButton>
                                         </div>
                                     )
                                 }
@@ -360,7 +361,7 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
             <div className="bg-white dark:bg-gray-800 p-1.5 rounded-2xl border border-gray-200 dark:border-gray-700 flex mb-10 shadow-sm w-full md:w-auto overflow-x-auto no-scrollbar whitespace-nowrap">
                 {
                     ['expenses', 'settlements', 'analytics'].map((tab) => (
-                        <button
+                        <FlipButton
                             key={tab}
                             onClick={() => setActiveTab(tab as 'expenses' | 'settlements' | 'analytics')}
                             className={`flex-1 md:flex-none px-6 md:px-10 py-2.5 rounded-xl font-mier font-bold text-sm transition-all shrink-0 ${activeTab === tab
@@ -369,7 +370,7 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                                 }`}
                         >
                             {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                        </button>
+                        </FlipButton>
                     ))
                 }
             </div>
@@ -533,13 +534,13 @@ const TripDetail = ({ tripId, isSharedView = false }: { tripId: string, isShared
                             </div>
 
                             <div>
-                                <button
+                                <FlipButton
                                     onClick={() => setShowDailyBreakdown(!showDailyBreakdown)}
                                     className="flex items-center gap-2 text-brand-blue font-bold text-base hover:underline py-2"
                                 >
                                     {showDailyBreakdown ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                                     {showDailyBreakdown ? "Hide Daily Breakdown (Carry-forward)" : "View Daily Breakdown (Carry-forward)"}
-                                </button>
+                                </FlipButton>
 
                                 {
                                     showDailyBreakdown && (

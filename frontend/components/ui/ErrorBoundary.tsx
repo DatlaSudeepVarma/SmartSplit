@@ -1,6 +1,7 @@
 "use client";
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { FlipButton } from './Text3DFlip';
 
 interface Props {
     children?: ReactNode;
@@ -29,12 +30,12 @@ class ErrorBoundary extends Component<Props, State> {
                 <div className="min-h-screen flex items-center justify-center p-6 text-center">
                     <div>
                         <h1 className="text-4xl font-bold mb-4">Something went wrong.</h1>
-                        <button
+                        <FlipButton
                             onClick={() => window.location.reload()}
                             className="px-6 py-2 bg-brand-blue text-white rounded-lg"
                         >
                             Reload Page
-                        </button>
+                        </FlipButton>
                     </div>
                 </div>
             );

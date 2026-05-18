@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
+import { FlipButton } from '../ui/Text3DFlip';
 import { Plane, Utensils, Gamepad2, Film, Check, TrendingUp } from 'lucide-react';
 
 interface SyncSourcesModalProps {
@@ -41,7 +42,7 @@ const SyncSourcesModal = ({ isOpen, onClose, onSync, onUnsync, isLoading }: Sync
                     {sources.map(source => {
                         const isSelected = selectedSources.includes(source.id);
                         return (
-                            <button
+                            <FlipButton
                                 key={source.id}
                                 onClick={() => toggleSource(source.id)}
                                 className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${isSelected
@@ -59,7 +60,7 @@ const SyncSourcesModal = ({ isOpen, onClose, onSync, onUnsync, isLoading }: Sync
                                     }`}>
                                     {isSelected && <Check size={14} className="text-white" />}
                                 </div>
-                            </button>
+                            </FlipButton>
                         );
                     })}
                 </div>

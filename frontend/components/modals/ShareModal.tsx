@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
+import { FlipButton } from '../ui/Text3DFlip';
 import { Trip, SharePermission } from '../../types';
 
 const ShareModal = ({ isOpen, onClose, trip, onGenerate, isLoading }: { isOpen: boolean, onClose: () => void, trip: Trip, onGenerate: (p: SharePermission) => void, isLoading: boolean }) => {
@@ -26,20 +27,20 @@ const ShareModal = ({ isOpen, onClose, trip, onGenerate, isLoading }: { isOpen: 
                 <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Set Permissions</label>
                     <div className="grid grid-cols-2 gap-4">
-                        <button
+                        <FlipButton
                             onClick={() => setPermission('view')}
                             className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${permission === 'view' ? 'border-brand-blue bg-brand-blue/5 text-brand-blue' : 'border-gray-100 dark:border-gray-700 text-gray-500 hover:border-gray-200'}`}
                         >
                             <span className="font-bold text-lg">View Only</span>
                             <span className="text-xs opacity-70">Cannot add or edit</span>
-                        </button>
-                        <button
+                        </FlipButton>
+                        <FlipButton
                             onClick={() => setPermission('edit')}
                             className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${permission === 'edit' ? 'border-brand-blue bg-brand-blue/5 text-brand-blue' : 'border-gray-100 dark:border-gray-700 text-gray-500 hover:border-gray-200'}`}
                         >
                             <span className="font-bold text-lg">Can Edit</span>
                             <span className="text-xs opacity-70">Full contributor access</span>
-                        </button>
+                        </FlipButton>
                     </div>
                 </div>
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowRight, Mail, Play } from 'lucide-react';
+import { FlipMotionButton } from '../ui/Text3DFlip';
 
 const HeroSection = () => {
     const router = useRouter();
@@ -148,19 +149,17 @@ const HeroSection = () => {
                     transition={{ delay: 0.55, duration: 0.6 }}
                     className="mt-10 flex flex-wrap items-center gap-4 sm:mt-12"
                 >
-                    <motion.button
+                    <FlipMotionButton
                         type="button"
-                        whileHover={{ scale: 1.04, y: -3 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => router.push('/register')}
                         className="inline-flex items-center gap-2 rounded-full bg-brand-green px-7 py-3.5 text-sm font-bold text-gray-900 shadow-[0_0_40px_-8px_rgba(249,107,0,0.45)] transition-shadow hover:shadow-[0_0_50px_-6px_rgba(249,107,0,0.5)] dark:bg-[#d4ff00] dark:shadow-[0_0_40px_-8px_rgba(212,255,0,0.55)] dark:hover:shadow-[0_0_50px_-6px_rgba(212,255,0,0.65)] sm:text-base"
                     >
                         Get started
                         <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.5} />
-                    </motion.button>
-                    <motion.button
+                    </FlipMotionButton>
+                    <FlipMotionButton
                         type="button"
-                        whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => {
                             document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
@@ -171,7 +170,7 @@ const HeroSection = () => {
                             <Play className="h-4 w-4 fill-current pl-0.5 text-gray-900 dark:text-white" />
                         </span>
                         See the flow
-                    </motion.button>
+                    </FlipMotionButton>
                 </motion.div>
 
                 <motion.div
@@ -195,17 +194,16 @@ const HeroSection = () => {
                                 autoComplete="email"
                             />
                         </div>
-                        <motion.button
+                        <FlipMotionButton
                             type="button"
-                            whileHover={{ scale: 1.03, y: -2 }}
                             whileTap={{ scale: 0.97 }}
                             onClick={goRegister}
                             className="rounded-xl bg-brand-green px-6 py-3.5 text-sm font-bold text-gray-900 dark:bg-[#d4ff00] sm:mr-1 sm:rounded-full sm:py-3"
                         >
                             Next step
-                        </motion.button>
+                        </FlipMotionButton>
                     </div>
-                    <motion.button
+                    <FlipMotionButton
                         type="button"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -215,7 +213,7 @@ const HeroSection = () => {
                     >
                         Already in?{' '}
                         <span className="font-semibold text-brand-green dark:text-[#d4ff00]">Sign in</span>
-                    </motion.button>
+                    </FlipMotionButton>
                 </motion.div>
             </div>
         </section>

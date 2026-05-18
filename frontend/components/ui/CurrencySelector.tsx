@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 import { CURRENCIES } from '../../lib/constants';
 import { Currency } from '../../types';
+import { FlipButton } from './Text3DFlip';
 
 interface CurrencySelectorProps {
     value: Currency;
@@ -40,7 +41,7 @@ const CurrencySelector = ({ value, onChange, label, className = '' }: CurrencySe
                 </label>
             )}
             <div className="relative">
-                <button
+                <FlipButton
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
                     className={`
@@ -58,13 +59,13 @@ const CurrencySelector = ({ value, onChange, label, className = '' }: CurrencySe
                         <span className="font-medium">{value}</span>
                     </div>
                     <ChevronDown size={18} className={`text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-                </button>
+                </FlipButton>
 
                 {isOpen && (
                     <div className="absolute z-50 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 p-1">
                         <div className="max-h-60 overflow-y-auto custom-scrollbar">
                             {currencies.map((currency) => (
-                                <button
+                                <FlipButton
                                     key={currency}
                                     type="button"
                                     onClick={() => {
@@ -90,7 +91,7 @@ const CurrencySelector = ({ value, onChange, label, className = '' }: CurrencySe
                                         <span className="font-medium">{currency}</span>
                                     </div>
                                     {value === currency && <Check size={18} />}
-                                </button>
+                                </FlipButton>
                             ))}
                         </div>
                     </div>
