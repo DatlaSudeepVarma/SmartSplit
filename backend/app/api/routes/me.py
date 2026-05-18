@@ -83,13 +83,14 @@ def get_profile(
     return UserProfileData(
         name=user_model.name,
         email=user_model.email,
+        profile_image_url=user_model.profile_image_url,
         phone_number=user_model.phone_number,
         default_currency=user_model.default_currency,
         timezone=user_model.timezone,
         language=user_model.language,
         notification_settings=notif_settings,
         trips=trip_summaries,
-        expenses=[] # Removed history as requested earlier
+        expenses=[],
     )
 
 
