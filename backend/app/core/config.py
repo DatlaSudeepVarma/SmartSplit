@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24 * 7
     cors_origins: str = "*"
+    openai_api_key: str | None = None
+    openai_model: str = "gpt-4o-mini"
 
     @property
     def cors_origins_list(self) -> list[str]:
