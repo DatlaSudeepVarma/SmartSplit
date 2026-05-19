@@ -7,6 +7,7 @@ import * as dashboard from './dashboard';
 import * as profile from './profile';
 import * as share from './share';
 import * as admin from './admin';
+import * as chat from './chat';
 
 export const api = {
     ...auth,
@@ -17,5 +18,6 @@ export const api = {
     ...dashboard,
     ...profile,
     ...share,
-    ...admin
+    ...admin,
+    ...chat
 };

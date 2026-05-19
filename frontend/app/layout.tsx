@@ -8,7 +8,7 @@ import SmoothScroll from "../components/ui/SmoothScroll";
 import ScrollProgressBar from "../components/ui/ScrollProgressBar";
 
 export const metadata: Metadata = {
-  title: "SmartSplit - Bill Splitting App",
+  title: "SmartSplit",
   description: "The smartest way to track shared expenses for travel, dining, and daily life.",
 };
 

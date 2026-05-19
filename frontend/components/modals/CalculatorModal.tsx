@@ -2,7 +2,7 @@
 
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { History, Moon, Sun, X } from "lucide-react";
+import { History, X } from "lucide-react";
 import { ThemeContext } from "../../context/AppContext";
 
 type CalcKey =
@@ -64,7 +64,7 @@ type CalculatorModalProps = {
 };
 
 const CalculatorModal = ({ isOpen, onClose }: CalculatorModalProps) => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const isDark = theme === "dark";
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -244,36 +244,9 @@ const CalculatorModal = ({ isOpen, onClose }: CalculatorModalProps) => {
           role="dialog"
           aria-label="Calculator"
         >
-          {/* Header: theme toggle */}
           <motion.div
-            className={`flex items-center justify-between px-4 pt-3 pb-1 ${isDark ? "bg-[#1a1a1c]" : "bg-white"}`}
+            className={`flex justify-end px-4 pt-3 pb-0 ${isDark ? "bg-[#1a1a1c]" : "bg-white"}`}
           >
-            <div
-              className={`flex items-center rounded-full p-0.5 ${
-                isDark ? "bg-[#2a2a2c]" : "bg-gray-100"
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => theme !== "light" && toggleTheme()}
-                className={`rounded-full p-2 transition-colors ${
-                  !isDark ? "bg-white shadow-sm" : "text-white/40 hover:text-white/70"
-                }`}
-                aria-label="Light mode"
-              >
-                <Sun size={16} strokeWidth={2} />
-              </button>
-              <button
-                type="button"
-                onClick={() => theme !== "dark" && toggleTheme()}
-                className={`rounded-full p-2 transition-colors ${
-                  isDark ? "bg-[#3a3a3c] shadow-sm text-white" : "text-gray-400 hover:text-gray-600"
-                }`}
-                aria-label="Dark mode"
-              >
-                <Moon size={16} strokeWidth={2} />
-              </button>
-            </motion.div>
             <button
               type="button"
               onClick={onClose}
@@ -309,7 +282,7 @@ const CalculatorModal = ({ isOpen, onClose }: CalculatorModalProps) => {
                   ))}
                 </>
               )}
-            </motion.div>
+            </p>
             <p
               className={`truncate text-4xl font-semibold tracking-tight ${
                 isDark ? "text-white" : "text-gray-900"
@@ -341,7 +314,7 @@ const CalculatorModal = ({ isOpen, onClose }: CalculatorModalProps) => {
                   )}
                 </button>
               ))}
-            </motion.div>
+            </div>
             <div
               className={`mx-auto mt-3 h-1 w-28 rounded-full ${
                 isDark ? "bg-white/20" : "bg-gray-300"

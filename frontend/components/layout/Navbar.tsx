@@ -9,9 +9,7 @@ import { FlipButton } from '../ui/Text3DFlip';
 import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
 import CalculatorModal from '../modals/CalculatorModal';
 import CurrencyConverterModal from '../modals/CurrencyConverterModal';
-import { AuthContext, ThemeContext, CurrencyContext, SplashContext } from '../../context/AppContext';
-import { CURRENCIES } from '../../lib/constants';
-import { Currency } from '../../types';
+import { AuthContext, ThemeContext, SplashContext } from '../../context/AppContext';
 
 const SCROLL_THRESHOLD = 24;
 
@@ -26,7 +24,6 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
     const isContained = variant === "contained";
     const { user, isAuthenticated } = useContext(AuthContext);
     const { theme, toggleTheme } = useContext(ThemeContext);
-    const { currency, setCurrency } = useContext(CurrencyContext);
     const { splashFinished } = useContext(SplashContext);
     const router = useRouter();
     const [showCalc, setShowCalc] = useState(false);
@@ -66,33 +63,18 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
             </button>
             <button
                 type="button"
+                data-conv-trigger
                 onClick={() => {
                     setShowCalc(false);
-                    setShowConv(true);
+                    setShowConv((open) => !open);
                 }}
-                className={iconBtn}
+                className={`${iconBtn} ${showConv ? 'bg-black/10 text-brand-blue dark:bg-white/15 dark:text-white' : ''}`}
                 title="Currency Converter"
+                aria-expanded={showConv}
             >
                 <ArrowLeftRight size={18} className="shrink-0" />
             </button>
         </>
-    );
-
-    const currencySelect = (
-        <label className="flex items-center gap-1.5 text-xs font-bold text-gray-700 dark:text-white/70">
-            <span className="hidden uppercase tracking-wide text-gray-500 sm:inline dark:text-white/45">CCY</span>
-            <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value as Currency)}
-                className="max-w-[3.5rem] cursor-pointer appearance-none bg-transparent py-0.5 pr-0.5 text-xs font-black text-gray-800 outline-none transition-all hover:text-brand-green dark:text-white/90 dark:hover:text-[#d4ff00]"
-            >
-                {Object.keys(CURRENCIES).map((c) => (
-                    <option key={c} value={c} className="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
-                        {c}
-                    </option>
-                ))}
-            </select>
-        </label>
     );
 
     const themeToggle = (
@@ -146,13 +128,13 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
                     <nav
                         className={navClassName}
                     >
-                        {/* Left: calculator, converter, currency */}
+                        {/* Left: calculator, converter */}
                         <div className="flex min-w-0 max-w-[42%] flex-1 items-center justify-start gap-1 sm:max-w-none sm:gap-1.5">
-                            <div className="flex items-center rounded-lg border border-gray-200/60 bg-gray-50/90 p-1 dark:border-white/10 dark:bg-white/[0.06]">
+                            <div className="relative flex items-center overflow-visible rounded-lg border border-gray-200/60 bg-gray-50/90 p-1 dark:border-white/10 dark:bg-white/[0.06]">
                                 {toolButtons}
+                                <CalculatorModal isOpen={showCalc} onClose={() => setShowCalc(false)} />
+                                <CurrencyConverterModal isOpen={showConv} onClose={() => setShowConv(false)} />
                             </div>
-                            <div className="hidden h-5 w-px bg-gray-200/90 sm:block dark:bg-white/15" />
-                            {currencySelect}
                         </div>
 
                         {/* Center: logo + text */}
@@ -246,10 +228,6 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
                                     {toolButtons}
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between py-3">
-                                <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Currency</span>
-                                {currencySelect}
-                            </div>
                             {!isAuthenticated && (
                                 <FlipButton
                                     type="button"
@@ -290,8 +268,6 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
                     </div>
                 )}
             </AnimatePresence>
-            <CalculatorModal isOpen={showCalc} onClose={() => setShowCalc(false)} />
-            <CurrencyConverterModal isOpen={showConv} onClose={() => setShowConv(false)} />
         </>
     );
 };
