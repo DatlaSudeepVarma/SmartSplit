@@ -4,6 +4,7 @@ import React from "react";
 import { Loader2 } from "lucide-react";
 import { motion, HTMLMotionProps } from "framer-motion";
 import { wrapButtonLabelChildren } from "./Text3DFlip";
+import { useButtonLabelTrigger } from "./useButtonLabelTrigger";
 
 interface ButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof HTMLMotionProps<"button">> {
@@ -19,8 +20,13 @@ const Button = ({
   variant = "primary",
   className = "",
   isLoading = false,
+  onMouseEnter,
+  onClick,
   ...props
 }: CombinedProps) => {
+  const { animKey, bindInteractionHandlers } = useButtonLabelTrigger();
+  const interaction = bindInteractionHandlers({ onMouseEnter, onClick });
+
   const base =
     "px-6 py-3.5 rounded-xl font-mier font-semibold transition-colors duration-200 flex items-center justify-center gap-2 focus:ring-4 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed text-base md:text-lg";
   const variants = {
@@ -38,13 +44,16 @@ const Button = ({
 
   return (
     <motion.button
+      whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 28 }}
       className={`${base} ${variants[variant]} ${className}`}
       disabled={isLoading || props.disabled}
       {...props}
+      {...interaction}
     >
       {isLoading && <Loader2 className="animate-spin" size={20} />}
-      {wrapButtonLabelChildren(children)}
+      {wrapButtonLabelChildren(children, animKey)}
     </motion.button>
   );
 };

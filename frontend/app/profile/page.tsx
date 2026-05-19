@@ -3,7 +3,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { LogOut, Mail, History, ArrowRight, User, Settings, Bell, Globe, Phone, Save, Check } from 'lucide-react';
+import { LogOut, Mail, History, ArrowRight, ArrowLeft, User, Settings, Bell, Globe, Phone, Save, Check, LayoutDashboard } from 'lucide-react';
+import ProfileChatbot from '../../components/chat/ProfileChatbot';
 import { AuthContext, CurrencyContext } from '../../context/AppContext';
 import { api } from '../../lib/api';
 import { formatAmount, formatDateWithDay } from '../../lib/formatters';
@@ -75,9 +76,19 @@ const ProfilePage = () => {
 
     return (
         <ProtectedRoute>
-            <div className="p-4 sm:p-8 max-w-6xl mx-auto pb-32">
+            <motion.div className="p-4 sm:p-8 max-w-6xl mx-auto pb-32">
+                <button
+                    type="button"
+                    onClick={() => router.push('/dashboard')}
+                    className="mb-6 inline-flex items-center gap-2 rounded-xl border border-gray-200/80 bg-white/80 px-4 py-2.5 text-sm font-bold text-gray-800 shadow-sm transition hover:border-brand-blue/30 hover:text-brand-blue dark:border-white/10 dark:bg-gray-900/60 dark:text-white dark:hover:text-brand-blue"
+                >
+                    <ArrowLeft size={18} />
+                    <LayoutDashboard size={18} />
+                    Go to Dashboard
+                </button>
+
                 {/* Header */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12">
+                <motion.div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12">
                     <div>
                         <h1 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white tracking-tight"> My Account </h1>
                         <p className="text-gray-500 dark:text-gray-400 font-bold mt-1"> Manage your personal details and app preferences </p>
@@ -94,9 +105,9 @@ const ProfilePage = () => {
                             <LogOut size={20} />
                         </Button>
                     </div>
-                </div>
+                </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <motion.div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Sidebar Area */}
                     <div className="lg:col-span-4 space-y-8">
                         {/* Profile Summary Card */}
@@ -161,6 +172,8 @@ const ProfilePage = () => {
 
                     {/* Main Content Area */}
                     <div className="lg:col-span-8 space-y-8">
+                        <ProfileChatbot userName={editData.name} />
+
                         {/* Personal Information Section */}
                         <Card className="p-8">
                             <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-8 flex items-center gap-3">
@@ -257,8 +270,8 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </ProtectedRoute>
     );
 };
