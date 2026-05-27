@@ -1,9 +1,9 @@
 "use client";
 
 import React from 'react';
-import { m } from 'framer-motion';
+import { m, type HTMLMotionProps } from 'framer-motion';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface CardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
     children: React.ReactNode;
 }
 

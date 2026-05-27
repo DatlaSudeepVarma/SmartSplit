@@ -200,7 +200,7 @@ const ActivityEventDetail = ({ eventId, backHref }: { eventId: string, backHref:
                 amount: settlement.amount,
                 date: new Date().toISOString(),
                 category: 'Payment',
-                paidBy: settlement.fromId,
+                paidBy: [settlement.fromId],
                 splitAmong: [settlement.toId],
                 isPayment: true
             }, actor);
@@ -450,7 +450,7 @@ const ActivityEventDetail = ({ eventId, backHref }: { eventId: string, backHref:
                                                     </div>
                                                     <div className="text-sm">
                                                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                                            <span className="font-bold text-gray-900 dark:text-white"> {data.participants.find(p => p.id === pay.paidBy)?.name} </span>
+                                                            <span className="font-bold text-gray-900 dark:text-white"> {data.participants.find(p => p.id === (Array.isArray(pay.paidBy) ? pay.paidBy[0] : pay.paidBy))?.name} </span>
                                                             <span className="text-gray-400">→</span>
                                                             <span className="font-bold text-gray-900 dark:text-white"> {data.participants.find(p => p.id === (pay.splitAmong || [])[0])?.name} </span>
                                                         </div>
