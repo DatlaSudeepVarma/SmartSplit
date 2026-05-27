@@ -14,6 +14,6 @@ export type ChatResponse = {
 export function sendChatMessage(message: string, history?: ChatMessage[]) {
   return apiRequest<ChatResponse>('/chat/message', {
     method: 'POST',
-    body: { message, history },
+    body: JSON.stringify({ message, history }),
   });
 }
