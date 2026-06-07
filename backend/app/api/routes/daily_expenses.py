@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user_id
+from app.api.deps import get_current_user_id, get_db
 from app.schemas.daily_expenses import (
     CreateDailyExpenseRequest,
     DailyCategory,
@@ -12,60 +13,72 @@ from app.schemas.daily_expenses import (
     SyncResponse,
     UpdateDailyExpenseRequest,
 )
+from app.services import daily_expenses as daily_expense_service
 
 router = APIRouter(prefix="/daily-expenses")
 
 
 @router.get("", response_model=list[DailyExpense])
-def list_daily_expenses(_user_id: str = Depends(get_current_user_id)) -> list[DailyExpense]:
-    return []
+def list_daily_expenses(
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+) -> list[DailyExpense]:
+    return daily_expense_service.list_expenses(db, user_id)
 
 
 @router.post("", response_model=DailyExpense)
-def create_daily_expense(_payload: CreateDailyExpenseRequest, _user_id: str = Depends(get_current_user_id)) -> DailyExpense:
-    return DailyExpense(
-        id="de_1",
-        user_id="me",
-        description=_payload.description,
-        amount=_payload.amount,
-        date=_payload.date,
-        category_id=_payload.category_id,
-        payment_method=_payload.payment_method,
-        notes=_payload.notes,
-        source_id=None,
-        source_type="manual",
-        metadata=None,
-    )
+def create_daily_expense(
+    payload: CreateDailyExpenseRequest,
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+) -> DailyExpense:
+    try:
+        return daily_expense_service.create_expense(db, user_id, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-@router.patch("/{expense_id}")
-def update_daily_expense(_expense_id: str, _payload: UpdateDailyExpenseRequest, _user_id: str = Depends(get_current_user_id)) -> None:
-    return None
+@router.patch("/{expense_id}", response_model=DailyExpense)
+def update_daily_expense(
+    expense_id: str,
+    payload: UpdateDailyExpenseRequest,
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+) -> DailyExpense:
+    try:
+        return daily_expense_service.update_expense(db, user_id, expense_id, payload)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.delete("/{expense_id}")
-def delete_daily_expense(_expense_id: str, _user_id: str = Depends(get_current_user_id)) -> None:
-    return None
+def delete_daily_expense(
+    expense_id: str,
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+) -> None:
+    try:
+        daily_expense_service.delete_expense(db, user_id, expense_id)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.get("/categories", response_model=list[DailyCategory])
-def list_daily_categories(_user_id: str = Depends(get_current_user_id)) -> list[DailyCategory]:
-    return []
+def list_daily_categories(
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+) -> list[DailyCategory]:
+    return daily_expense_service.list_categories(db, user_id)
 
 
 @router.get("/stats", response_model=DailyStats)
-def get_daily_stats(_user_id: str = Depends(get_current_user_id)) -> DailyStats:
-    return DailyStats(
-        total_spent=0.0,
-        monthly_spent=0.0,
-        avg_daily=0.0,
-        category_breakdown={},
-        category_breakdown_items=[],
-        spent_vs_salary_percent=0.0,
-        salary_status="safe",
-        salary_message="",
-        remaining_salary=0.0,
-    )
+def get_daily_stats(
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+) -> DailyStats:
+    return daily_expense_service.compute_stats(db, user_id)
 
 
 @router.post("/sync", response_model=SyncResponse)
@@ -81,6 +94,3 @@ def unsync_expenses(_payload: SyncRequest, _user_id: str = Depends(get_current_u
 @router.get("/__health")
 def health() -> dict:
     return {"ok": True, "ts": datetime.utcnow().isoformat()}
-
-
-# Salary endpoints live under routes/me.py
