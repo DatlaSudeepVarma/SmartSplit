@@ -10,13 +10,31 @@ router = APIRouter(prefix="/me")
 
 
 @router.get("/salary", response_model=SalaryResponse)
-def get_salary(_user_id: str = Depends(get_current_user_id)) -> SalaryResponse:
-    return SalaryResponse(monthly_salary=None)
+def get_salary(
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+) -> SalaryResponse:
+    from app.models import User
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return SalaryResponse(monthly_salary=user.monthly_salary)
 
 
 @router.put("/salary")
-def update_salary(_payload: UpdateSalaryRequest, _user_id: str = Depends(get_current_user_id)) -> None:
-    return None
+def update_salary(
+    payload: UpdateSalaryRequest,
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+) -> None:
+    from app.models import User
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.monthly_salary = payload.monthly_salary
+    db.commit()
 
 
 @router.get("/trip-shares", response_model=dict[str, float])
