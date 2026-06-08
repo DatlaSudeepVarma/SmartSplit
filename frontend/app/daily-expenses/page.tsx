@@ -62,20 +62,23 @@ export default function DailyExpensesPage() {
     const [editingExpense, setEditingExpense] = useState<DailyExpense | undefined>(undefined);
 
     const refresh = () => {
-        if (user) {
-            Promise.all([
-                api.getDailyExpenses(user.id),
-                api.getDailyCategories(user.id),
-                api.getMonthlySalary(user.id),
-                api.getDailyStats(user.id)
-            ]).then(([expList, catList, salary, dailyStats]) => {
+        if (!user) return;
+        Promise.all([
+            api.getDailyExpenses(user.id),
+            api.getDailyCategories(user.id),
+            api.getMonthlySalary(user.id),
+            api.getDailyStats(user.id)
+        ])
+            .then(([expList, catList, salary, dailyStats]) => {
                 setExpenses(expList);
                 setCategories(catList);
                 setMonthlySalary(salary || 0);
                 setStats(dailyStats);
-                setIsLoading(false);
-            });
-        }
+            })
+            .catch((err) => {
+                console.error('Failed to load daily expenses:', err);
+            })
+            .finally(() => setIsLoading(false));
     };
 
     useEffect(refresh, [user]);
