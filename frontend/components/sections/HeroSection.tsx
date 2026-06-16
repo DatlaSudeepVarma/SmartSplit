@@ -28,7 +28,7 @@ const HeroSection = () => {
     };
 
     return (
-        <section className="relative z-0 bg-[#8dc6e4] pb-24 pt-12 sm:pb-32 sm:pt-16 dark:bg-[#5a8eb0]">
+        <section className="relative z-0 bg-[#8dc6e4] pb-24 pt-[4.25rem] sm:pb-32 sm:pt-[4.75rem] dark:bg-[#5a8eb0]">
 
             <div
                 className="pointer-events-none absolute inset-0 -z-10 opacity-[0.22] dark:opacity-[0.28]"
@@ -88,7 +88,7 @@ const HeroSection = () => {
                 ))}
             </div>
 
-            <div className="relative z-10 mx-auto max-w-[1100px] px-4 pt-12 sm:px-6 sm:pt-16">
+            <div className="relative z-10 mx-auto max-w-[1100px] px-4 pt-6 sm:px-6 sm:pt-10">
                 <motion.p
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}

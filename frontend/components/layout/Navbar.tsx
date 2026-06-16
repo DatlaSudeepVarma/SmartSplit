@@ -103,7 +103,7 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
     const navClassName = [
         'pointer-events-auto flex items-center transition-all duration-300',
         isContained
-            ? 'sticky top-0 z-50 mx-auto w-full max-w-[720px] rounded-b-2xl border-x border-b px-5 py-2.5 sm:px-8 sm:py-3'
+            ? 'pointer-events-auto relative z-[100] mx-auto w-full max-w-[720px] rounded-b-2xl border-x border-b px-5 py-2.5 sm:px-8 sm:py-3'
             : (isInset
                 ? 'relative mx-auto w-[min(82vw,26rem)] rounded-full border px-6 py-2.5 backdrop-blur-md sm:py-3'
                 : 'relative mx-auto max-w-[17.5rem] rounded-xl border px-2.5 py-2 backdrop-blur-xl sm:max-w-[22rem] sm:rounded-2xl sm:px-3.5 sm:py-2.5 dark:backdrop-blur-2xl'),
@@ -111,7 +111,7 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
     ].join(' ');
 
     const headerClassName = isContained
-        ? 'sticky top-0 z-50 w-full'
+        ? 'pointer-events-none fixed inset-x-0 top-0 z-[100] w-full'
         : (isInset
             ? 'pointer-events-none fixed inset-x-0 top-4 z-[100] flex w-full justify-center px-4 sm:top-8'
             : 'pointer-events-none fixed inset-x-0 top-3 z-[100] px-3 sm:top-4 sm:px-5');

@@ -16,8 +16,8 @@ const LandingPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 p-3 text-gray-900 transition-colors duration-200 dark:bg-[#050505] dark:text-[#f2f2ed] sm:p-4 md:p-6">
+            <Navbar variant="contained" />
             <div className="mx-auto max-w-[1400px] overflow-hidden rounded-[2.5rem] bg-[#8dc6e4] shadow-xl dark:bg-[#5a8eb0] sm:rounded-[3rem]">
-                <Navbar variant="contained" />
                 <HeroSection />
             </div>
             <LandingFeatures />
