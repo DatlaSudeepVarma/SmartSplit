@@ -91,8 +91,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     useEffect(() => {
+        if (!splashFinished) {
+            document.documentElement.className = 'light';
+            return;
+        }
         document.documentElement.className = theme;
-    }, [theme]);
+    }, [theme, splashFinished]);
 
     const login = (u: UserData, t: string) => {
         localStorage.setItem('user', JSON.stringify(u));

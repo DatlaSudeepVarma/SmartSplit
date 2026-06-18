@@ -28,6 +28,35 @@
     @apply bg-gray-50 antialiased dark:bg-gray-950;
     @apply transition-colors duration-200;
   }
+
+  :root {
+    --landing-nav-bg: #ffffff;
+    --landing-outer-bg: #f9fafb;
+    --site-frame-mat: #f9fafb;
+    --site-frame-size: 0.625rem;
+    --site-frame-radius: 1rem;
+  }
+
+  .dark {
+    --landing-nav-bg: #0a0a0a;
+    --landing-outer-bg: #050505;
+    --site-frame-mat: #050505;
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --site-frame-size: 0.875rem;
+      --site-frame-radius: 1.5rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --site-frame-size: 1.25rem;
+      --site-frame-radius: 1.75rem;
+    }
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
@@ -71,6 +100,22 @@
 
   .font-mier {
     font-family: var(--font-mier);
+  }
+
+  /* Fills the gutter outside the rounded frame so content scrolls underneath. */
+  .site-frame-mat {
+    box-shadow: 0 0 0 100vmax var(--site-frame-mat);
+  }
+
+  /* Clip scroll content to the same rounded inset as the frame border. */
+  .site-content-clip {
+    clip-path: inset(var(--site-frame-size) round var(--site-frame-radius));
+  }
+
+  .nav-tab-shell {
+    position: relative;
+    background-color: var(--landing-nav-bg);
+    transition: background-color 0.2s ease;
   }
 }
 

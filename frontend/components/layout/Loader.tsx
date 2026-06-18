@@ -27,7 +27,7 @@ const Loader = () => {
                         opacity: 0,
                         transition: { duration: 0.8, ease: "easeInOut" }
                     }}
-                    className="fixed inset-0 z-[250] flex items-center justify-center bg-white dark:bg-gray-950"
+                    className="fixed inset-0 z-[250] flex items-center justify-center bg-white"
                 >
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}

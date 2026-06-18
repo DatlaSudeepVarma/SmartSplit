@@ -28,7 +28,7 @@ const HeroSection = () => {
     };
 
     return (
-        <section className="relative z-0 bg-[#8dc6e4] pb-24 pt-[4.25rem] sm:pb-32 sm:pt-[4.75rem] dark:bg-[#5a8eb0]">
+        <section className="relative z-0 bg-[#8dc6e4] pb-24 pt-28 sm:pb-32 sm:pt-32 dark:bg-[#5a8eb0]">
 
             <div
                 className="pointer-events-none absolute inset-0 -z-10 opacity-[0.22] dark:opacity-[0.28]"
