@@ -12,18 +12,24 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-Create `.env`:
+Create `.env` locally (**do not commit this file**):
 
 ```env
-DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/smartsplit
-SECRET_KEY=change-me
+DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST:5432/DATABASE
+SECRET_KEY=<generate-a-long-random-string>
 ACCESS_TOKEN_EXPIRE_MINUTES=10080
-OPENAI_API_KEY=sk-...           # optional
+OPENAI_API_KEY=<your-openai-api-key>   # optional
+```
+
+Generate a `SECRET_KEY`:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
 ```bash
 alembic upgrade head            # run migrations
-# python scripts/init_db.py     # or: create tables + seed admin
+# python scripts/init_db.py     # optional: local tables + admin seed — customize first
 
 uvicorn app.main:app --reload --port 8000
 ```
@@ -32,10 +38,9 @@ uvicorn app.main:app --reload --port 8000
 - Swagger docs: http://localhost:8000/docs
 - Health: http://localhost:8000/daily-expenses/__health
 
-## Default Admin (after `init_db.py`)
+## Local admin seed
 
-- Email: `admin@smartsplit.com`
-- Password: `admin123`
+`scripts/init_db.py` can create an initial admin user for **local development only**. Edit that script to set your own credentials before running, and never reuse development seeds in production.
 
 ## Structure
 
