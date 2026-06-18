@@ -8,11 +8,13 @@ Next.js 16 application for the SmartSplit expense-tracking platform.
 npm install
 ```
 
-Create `.env.local`:
+Create `.env.local` (**do not commit this file**):
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
+
+Use your deployed API URL in production. Only variables prefixed with `NEXT_PUBLIC_` are exposed to the browser.
 
 ```bash
 npm run dev    # http://localhost:3000
@@ -50,7 +52,7 @@ await api.getTrips(userId);
 await api.addDailyExpense(userId, data);
 ```
 
-The HTTP client (`lib/api/client.ts`) reads `NEXT_PUBLIC_API_URL` and attaches the JWT from `localStorage`.
+The HTTP client (`lib/api/client.ts`) reads `NEXT_PUBLIC_API_URL` and attaches the JWT from `localStorage`. Do not put private API keys in frontend env vars.
 
 ## Full Documentation
 

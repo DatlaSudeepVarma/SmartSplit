@@ -458,14 +458,20 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Create `backend/.env`:
+Create `backend/.env` (copy from a local template — **never commit this file**):
 
 ```env
-DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/smartsplit
-SECRET_KEY=your-secret-key-here
+DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST:5432/DATABASE
+SECRET_KEY=<generate-a-long-random-string>
 ACCESS_TOKEN_EXPIRE_MINUTES=10080
-OPENAI_API_KEY=sk-...          # optional — enables AI chat
+OPENAI_API_KEY=<your-openai-api-key>   # optional — enables AI chat
 OPENAI_MODEL=gpt-4o-mini
+```
+
+Generate a secret key locally, for example:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
 Run migrations:
@@ -474,11 +480,13 @@ Run migrations:
 alembic upgrade head
 ```
 
-Or initialize tables and seed the admin user directly:
+Or initialize tables and seed a development admin user (local only):
 
 ```bash
 python scripts/init_db.py
 ```
+
+> **Security:** Review and customize credentials in `backend/scripts/init_db.py` before running. Do not use seeded development accounts in production.
 
 Start the API server:
 
@@ -520,23 +528,25 @@ npm run start
 
 ## Environment Variables
 
+> **Do not commit secrets.** Keep `backend/.env` and `frontend/.env.local` out of version control (see `.gitignore`).
+
 ### Backend (`backend/.env`)
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DATABASE_URL` | `postgresql+psycopg://postgres:postgres@localhost:5432/smartsplit` | PostgreSQL connection string |
-| `SECRET_KEY` | `change-me` | JWT signing secret — **change in production** |
-| `ALGORITHM` | `HS256` | JWT algorithm |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | `10080` (7 days) | Token lifetime |
-| `CORS_ORIGINS` | `*` | Comma-separated allowed origins |
-| `OPENAI_API_KEY` | — | Optional OpenAI key for profile chatbot |
-| `OPENAI_MODEL` | `gpt-4o-mini` | OpenAI model name |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Yes | PostgreSQL connection string (`postgresql+psycopg://USER:PASSWORD@HOST:PORT/DB`) |
+| `SECRET_KEY` | Yes | Long random string for JWT signing — generate per environment |
+| `ALGORITHM` | No | JWT algorithm (default: `HS256`) |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | No | Token lifetime (default: 7 days) |
+| `CORS_ORIGINS` | No | Comma-separated allowed origins for production |
+| `OPENAI_API_KEY` | No | Optional OpenAI key for profile chatbot |
+| `OPENAI_MODEL` | No | OpenAI model name (default: `gpt-4o-mini`) |
 
 ### Frontend (`frontend/.env.local`)
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `NEXT_PUBLIC_API_URL` | `http://127.0.0.1:8000` | FastAPI base URL |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NEXT_PUBLIC_API_URL` | Yes | FastAPI base URL (e.g. `http://localhost:8000` in development) |
 
 Exchange-rate routes use public APIs (Frankfurter ECB, open.er-api.com) and require no API keys.
 
@@ -560,21 +570,20 @@ Exchange-rate routes use public APIs (Frankfurter ECB, open.er-api.com) and requ
 | `uvicorn app.main:app --reload` | Start API with hot reload |
 | `alembic upgrade head` | Apply all migrations |
 | `alembic revision --autogenerate -m "msg"` | Create a new migration |
-| `python scripts/init_db.py` | Create tables + seed admin |
+| `python scripts/init_db.py` | Create tables + optional local admin seed |
 | `python scripts/fix_alembic.py` | Reset Alembic version (utility) |
 
 ---
 
-## Default Admin Account
+## Security (public repository)
 
-After running `python scripts/init_db.py`:
+This repo is public. Treat the following as mandatory for any deployment:
 
-| Field | Value |
-|-------|-------|
-| Email | `admin@smartsplit.com` |
-| Password | `admin123` |
-
-Admin users are redirected to `/admin` instead of `/dashboard`.
+1. **Environment files** — Never commit `backend/.env`, `frontend/.env.local`, or real API keys.
+2. **`SECRET_KEY`** — Use a unique, randomly generated value per environment.
+3. **Database** — Use strong database credentials; do not rely on local-only defaults.
+4. **Admin seed** — If you run `scripts/init_db.py`, change seeded admin credentials before exposing the app.
+5. **Production** — Restrict `CORS_ORIGINS`, use HTTPS, and rotate secrets if they were ever exposed.
 
 ---
 
@@ -590,6 +599,8 @@ Admin users are redirected to `/admin` instead of `/dashboard`.
 | Activity list endpoints (`/activities/*/events`) | Return empty arrays |
 | Daily expense sync from modules | Returns `count: 0` |
 | Admin API authorization | No server-side admin guard |
+
+
 
 ---
 

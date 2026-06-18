@@ -10,6 +10,13 @@ import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
 import CalculatorModal from '../modals/CalculatorModal';
 import CurrencyConverterModal from '../modals/CurrencyConverterModal';
 import { AuthContext, ThemeContext, SplashContext } from '../../context/AppContext';
+import NavTabChrome from './NavTabChrome';
+import {
+    SITE_FRAME_INSET_TOP,
+    SITE_FRAME_INSET_X,
+    SITE_NAV_TAB_BORDER,
+    SITE_NAV_WIDTH,
+} from '../../lib/siteFrame';
 
 const SCROLL_THRESHOLD = 24;
 
@@ -94,16 +101,14 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
         ? 'border-gray-200/90 bg-white/95 shadow-xl dark:border-white/15 dark:bg-[#0a0a0a]/95'
         : 'border-gray-200/80 bg-white/80 shadow-lg dark:border-white/12 dark:bg-[#0a0a0a]/80';
 
-    const shellClassContained = scrolled
-        ? 'border-gray-200 bg-white shadow-xl dark:border-white/15 dark:bg-[#0a0a0a]'
-        : 'border-gray-200/50 bg-white shadow-lg dark:border-white/10 dark:bg-[#0a0a0a]';
+    const shellClassContained = SITE_NAV_TAB_BORDER;
 
     const shellClass = isContained ? shellClassContained : (isInset ? shellClassInset : shellClassFixed);
 
     const navClassName = [
-        'pointer-events-auto flex items-center transition-all duration-300',
+        'pointer-events-auto relative flex shrink-0 items-center transition-all duration-300',
         isContained
-            ? 'pointer-events-auto relative z-[100] mx-auto w-full max-w-[720px] rounded-b-2xl border-x border-b px-5 py-2.5 sm:px-8 sm:py-3'
+            ? `${SITE_NAV_WIDTH} h-14 rounded-t-none rounded-b-xl border-t-0 px-5 shadow-sm sm:h-16 sm:rounded-b-2xl sm:px-7`
             : (isInset
                 ? 'relative mx-auto w-[min(82vw,26rem)] rounded-full border px-6 py-2.5 backdrop-blur-md sm:py-3'
                 : 'relative mx-auto max-w-[17.5rem] rounded-xl border px-2.5 py-2 backdrop-blur-xl sm:max-w-[22rem] sm:rounded-2xl sm:px-3.5 sm:py-2.5 dark:backdrop-blur-2xl'),
@@ -111,10 +116,82 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
     ].join(' ');
 
     const headerClassName = isContained
-        ? 'pointer-events-none fixed inset-x-0 top-0 z-[100] w-full'
+        ? `pointer-events-none fixed z-[100] w-full ${SITE_FRAME_INSET_TOP} ${SITE_FRAME_INSET_X}`
         : (isInset
             ? 'pointer-events-none fixed inset-x-0 top-4 z-[100] flex w-full justify-center px-4 sm:top-8'
             : 'pointer-events-none fixed inset-x-0 top-3 z-[100] px-3 sm:top-4 sm:px-5');
+
+    const navInner = (
+        <>
+            {/* Left: calculator, converter */}
+            <div className="flex min-w-0 max-w-[42%] flex-1 items-center justify-start gap-1 sm:max-w-none sm:gap-1.5">
+                <div className="relative flex items-center overflow-visible rounded-lg border border-gray-200/60 bg-gray-50/90 p-1 dark:border-white/10 dark:bg-white/[0.06]">
+                    {toolButtons}
+                    <CalculatorModal isOpen={showCalc} onClose={() => setShowCalc(false)} />
+                    <CurrencyConverterModal isOpen={showConv} onClose={() => setShowConv(false)} />
+                </div>
+            </div>
+
+            {/* Center: logo + text */}
+            <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 justify-center">
+                <button
+                    type="button"
+                    onClick={goHome}
+                    className="group flex items-center gap-1.5 sm:gap-2"
+                >
+                    <SmartSplitLogo className="h-7 w-7 shrink-0 sm:h-8 sm:w-8" />
+                    <span className="font-mier text-sm font-semibold tracking-tight text-gray-900 dark:text-white sm:text-base">
+                        SmartSplit
+                    </span>
+                </button>
+            </div>
+
+            {/* Right: theme + sign in / account */}
+            <div className="flex min-w-0 max-w-[42%] flex-1 items-center justify-end gap-1 sm:max-w-none sm:gap-1.5">
+                <div className="hidden items-center sm:flex">{themeToggle}</div>
+                {isAuthenticated && user ? (
+                    <>
+                        {user.isAdmin && (
+                            <button
+                                type="button"
+                                onClick={() => router.push('/admin')}
+                                className="rounded-md p-2 text-gray-500 hover:bg-purple-500/10 hover:text-purple-500 dark:text-gray-400"
+                                title="Admin"
+                            >
+                                <Shield size={18} />
+                            </button>
+                        )}
+                        {!user.isAdmin && (
+                            <button
+                                type="button"
+                                onClick={() => router.push('/profile')}
+                                className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-tr from-brand-blue to-brand-orange text-[11px] font-black text-white shadow-sm sm:h-9 sm:w-9 sm:text-sm"
+                            >
+                                {user.name.charAt(0).toUpperCase()}
+                            </button>
+                        )}
+                    </>
+                ) : (
+                    <FlipButton
+                        type="button"
+                        onClick={() => router.push('/login')}
+                        className="rounded-lg px-3 py-1.5 text-sm font-semibold text-gray-800 transition-colors hover:bg-black/[0.05] dark:text-white dark:hover:bg-white/10 sm:px-3.5 sm:text-base"
+                    >
+                        Sign in
+                    </FlipButton>
+                )}
+                <button
+                    type="button"
+                    className="rounded-lg p-2 text-gray-800 hover:bg-black/[0.05] sm:hidden dark:text-white dark:hover:bg-white/10"
+                    onClick={() => setMobileOpen((o) => !o)}
+                    aria-expanded={mobileOpen}
+                    aria-label={mobileOpen ? 'Close menu' : 'Menu'}
+                >
+                    {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+                </button>
+            </div>
+        </>
+    );
 
     return (
         <>
@@ -125,77 +202,15 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
                     transition={{ duration: 0.35, ease: 'easeOut' }}
                     className={headerClassName}
                 >
-                    <nav
-                        className={navClassName}
-                    >
-                        {/* Left: calculator, converter */}
-                        <div className="flex min-w-0 max-w-[42%] flex-1 items-center justify-start gap-1 sm:max-w-none sm:gap-1.5">
-                            <div className="relative flex items-center overflow-visible rounded-lg border border-gray-200/60 bg-gray-50/90 p-1 dark:border-white/10 dark:bg-white/[0.06]">
-                                {toolButtons}
-                                <CalculatorModal isOpen={showCalc} onClose={() => setShowCalc(false)} />
-                                <CurrencyConverterModal isOpen={showConv} onClose={() => setShowConv(false)} />
-                            </div>
-                        </div>
-
-                        {/* Center: logo + text */}
-                        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 justify-center">
-                            <button
-                                type="button"
-                                onClick={goHome}
-                                className="group flex items-center gap-1.5 sm:gap-2"
-                            >
-                                <SmartSplitLogo className="h-7 w-7 shrink-0 sm:h-8 sm:w-8" />
-                                <span className="font-mier text-sm font-semibold tracking-tight text-gray-900 dark:text-white sm:text-base">
-                                    SmartSplit
-                                </span>
-                            </button>
-                        </div>
-
-                        {/* Right: theme + sign in / account */}
-                        <div className="flex min-w-0 max-w-[42%] flex-1 items-center justify-end gap-1 sm:max-w-none sm:gap-1.5">
-                            <div className="hidden items-center sm:flex">{themeToggle}</div>
-                            {isAuthenticated && user ? (
-                                <>
-                                    {user.isAdmin && (
-                                        <button
-                                            type="button"
-                                            onClick={() => router.push('/admin')}
-                                            className="rounded-md p-2 text-gray-500 hover:bg-purple-500/10 hover:text-purple-500 dark:text-gray-400"
-                                            title="Admin"
-                                        >
-                                            <Shield size={18} />
-                                        </button>
-                                    )}
-                                    {!user.isAdmin && (
-                                        <button
-                                            type="button"
-                                            onClick={() => router.push('/profile')}
-                                            className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-tr from-brand-blue to-brand-orange text-[11px] font-black text-white shadow-sm sm:h-9 sm:w-9 sm:text-sm"
-                                        >
-                                            {user.name.charAt(0).toUpperCase()}
-                                        </button>
-                                    )}
-                                </>
-                            ) : (
-                                <FlipButton
-                                    type="button"
-                                    onClick={() => router.push('/login')}
-                                    className="rounded-lg px-3 py-1.5 text-sm font-semibold text-gray-800 transition-colors hover:bg-black/[0.05] dark:text-white dark:hover:bg-white/10 sm:px-3.5 sm:text-base"
-                                >
-                                    Sign in
-                                </FlipButton>
-                            )}
-                            <button
-                                type="button"
-                                className="rounded-lg p-2 text-gray-800 hover:bg-black/[0.05] sm:hidden dark:text-white dark:hover:bg-white/10"
-                                onClick={() => setMobileOpen((o) => !o)}
-                                aria-expanded={mobileOpen}
-                                aria-label={mobileOpen ? 'Close menu' : 'Menu'}
-                            >
-                                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-                            </button>
-                        </div>
-                    </nav>
+                    {isContained ? (
+                        <NavTabChrome navClassName={navClassName}>
+                            {navInner}
+                        </NavTabChrome>
+                    ) : (
+                        <nav className={navClassName}>
+                            {navInner}
+                        </nav>
+                    )}
                 </motion.header>
             )}
 
@@ -216,7 +231,7 @@ const Navbar = ({ variant = "fixed" }: NavbarProps) => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -8 }}
                             transition={{ duration: 0.2 }}
-                            className={`pointer-events-auto absolute left-4 right-4 mx-auto max-w-[17.5rem] overflow-hidden rounded-xl border border-gray-200/80 bg-white/95 p-3 shadow-xl backdrop-blur-xl dark:border-white/12 dark:bg-[#0c0c0c]/95 sm:left-6 sm:right-6 ${isInset ? 'top-[calc(0.75rem+3.5rem+0.75rem)] sm:top-[calc(1rem+3.5rem+0.75rem)]' : 'top-[3.75rem]'}`}
+                            className={`pointer-events-auto absolute left-4 right-4 mx-auto max-w-[17.5rem] overflow-hidden rounded-xl border border-gray-200/80 bg-white/95 p-3 shadow-xl backdrop-blur-xl dark:border-white/12 dark:bg-[#0c0c0c]/95 sm:left-6 sm:right-6 ${isContained ? 'top-[calc(0.625rem+3.5rem)] sm:top-[calc(0.875rem+4rem)] md:top-[calc(1.25rem+4rem)]' : isInset ? 'top-[calc(0.75rem+3.5rem+0.75rem)] sm:top-[calc(1rem+3.5rem+0.75rem)]' : 'top-[3.75rem]'}`}
                         >
                             <div className="flex items-center justify-between border-b border-gray-200/60 pb-3 dark:border-white/10">
                                 <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Theme</span>
