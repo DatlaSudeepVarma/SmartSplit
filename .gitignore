@@ -24,6 +24,19 @@
 .DS_Store
 *.pem
 
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
