@@ -131,16 +131,7 @@ const HeroSection = () => {
                     transition={{ delay: 0.45, duration: 0.75 }}
                     className="mt-8 max-w-xl text-lg leading-relaxed text-gray-600 dark:text-white/55 sm:mt-10 sm:text-xl"
                 >
-                    Bill-splitting with motion-studio energy — layout inspired by{' '}
-                    <a
-                        href="https://ribbit.dk/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-brand-green underline decoration-brand-green/35 underline-offset-4 transition-colors hover:text-brand-blue dark:text-white/85 dark:decoration-[#d4ff00]/40 dark:hover:text-[#d4ff00]"
-                    >
-                        Ribbit
-                    </a>
-                    . Track, split, and settle without the spreadsheet.
+                    Bill-splitting with motion-studio energy. Track, split, and settle without the spreadsheet.
                 </motion.p>
 
                 <motion.div
