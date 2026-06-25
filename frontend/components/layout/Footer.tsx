@@ -1,31 +1,16 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { m } from 'framer-motion';
-import { ArrowRight, Mail, Github, Twitter, Linkedin, Instagram, Send, Check } from 'lucide-react';
+import { ArrowRight, Mail, Github, Twitter, Linkedin, Instagram } from 'lucide-react';
 import SmartSplitLogo from '../ui/SmartSplitLogo';
 import { FlipMotionButton } from '../ui/Text3DFlip';
 import { fadeUp, staggerContainer, viewportOnce } from '../../lib/motion';
 
 const Footer = () => {
     const router = useRouter();
-    const [email, setEmail] = useState('');
-    const [subscribed, setSubscribed] = useState(false);
-    const [submitting, setSubmitting] = useState(false);
-
-    const handleSubscribe = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!email.trim()) return;
-        setSubmitting(true);
-        // Simulate API call
-        setTimeout(() => {
-            setSubmitting(false);
-            setSubscribed(true);
-            setEmail('');
-        }, 1000);
-    };
 
     return (
         <footer
@@ -48,45 +33,6 @@ const Footer = () => {
                         <p className="text-sm leading-relaxed text-gray-600 dark:text-white/55 sm:text-base">
                             The smartest way to split rent, trips, and everyday expenses — without spreadsheets or awkward follow-ups.
                         </p>
-                        
-                        <div className="mt-8">
-                            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-white/40">Newsletter</p>
-                            <p className="mb-4 text-xs text-gray-600 dark:text-white/45">Get weekly smart spending tips and product updates.</p>
-                            {subscribed ? (
-                                <m.div 
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 p-3 rounded-xl border border-emerald-200/50 dark:border-emerald-800/30 max-w-[280px]"
-                                >
-                                    <Check className="h-4 w-4 shrink-0 text-emerald-500" />
-                                    <span>Awesome! You've subscribed.</span>
-                                </m.div>
-                            ) : (
-                                <form onSubmit={handleSubscribe} className="relative flex items-center max-w-[280px]">
-                                    <input
-                                        type="email"
-                                        required
-                                        placeholder="your@email.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        disabled={submitting}
-                                        className="w-full rounded-xl border border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-white/5 py-2 pl-4 pr-10 text-sm text-gray-900 placeholder-gray-400 dark:placeholder-white/35 focus:border-[#f96b00] focus:ring-1 focus:ring-[#f96b00] dark:text-[#f2f2ed] dark:focus:border-[#d4ff00] dark:focus:ring-[#d4ff00] outline-none transition-all duration-200"
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={submitting}
-                                        className="absolute right-1 p-1.5 rounded-lg bg-gray-900 text-white dark:bg-white dark:text-gray-900 hover:bg-[#f96b00] dark:hover:bg-[#d4ff00] hover:text-black dark:hover:text-black transition-colors duration-200 disabled:opacity-50"
-                                        aria-label="Subscribe"
-                                    >
-                                        {submitting ? (
-                                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                                        ) : (
-                                            <Send className="h-3.5 w-3.5" />
-                                        )}
-                                    </button>
-                                </form>
-                            )}
-                        </div>
 
                         <FlipMotionButton
                             type="button"
