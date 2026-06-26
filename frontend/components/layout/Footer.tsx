@@ -83,12 +83,32 @@ const Footer = () => {
 
                     <m.div variants={fadeUp} custom={2}>
                         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-white/40">Features</p>
-                        <ul className="flex flex-col gap-2.5 text-sm text-gray-600 dark:text-white/65">
-                            <li className="hover:text-[#f96b00] dark:hover:text-[#d4ff00] transition-colors cursor-default">Real-time settling</li>
-                            <li className="hover:text-[#f96b00] dark:hover:text-[#d4ff00] transition-colors cursor-default">Smart reminders</li>
-                            <li className="hover:text-[#f96b00] dark:hover:text-[#d4ff00] transition-colors cursor-default">Multi-currency support</li>
-                            <li className="hover:text-[#f96b00] dark:hover:text-[#d4ff00] transition-colors cursor-default">Activity timelines</li>
-                            <li className="hover:text-[#f96b00] dark:hover:text-[#d4ff00] transition-colors cursor-default">Group chats</li>
+                        <ul className="flex flex-col gap-2.5 text-sm">
+                            <li>
+                                <Link href="/features/real-time-settling" className="text-gray-600 dark:text-white/65 transition-colors hover:text-[#f96b00] dark:hover:text-[#d4ff00]">
+                                    Real-time settling
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/features/smart-reminders" className="text-gray-600 dark:text-white/65 transition-colors hover:text-[#f96b00] dark:hover:text-[#d4ff00]">
+                                    Smart reminders
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/features/multi-currency-support" className="text-gray-600 dark:text-white/65 transition-colors hover:text-[#f96b00] dark:hover:text-[#d4ff00]">
+                                    Multi-currency support
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/features/activity-timelines" className="text-gray-600 dark:text-white/65 transition-colors hover:text-[#f96b00] dark:hover:text-[#d4ff00]">
+                                    Activity timelines
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/features/group-chats" className="text-gray-600 dark:text-white/65 transition-colors hover:text-[#f96b00] dark:hover:text-[#d4ff00]">
+                                    Group chats
+                                </Link>
+                            </li>
                         </ul>
                     </m.div>
 
