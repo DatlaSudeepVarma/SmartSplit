@@ -3,20 +3,43 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { m } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import {
+    ArrowLeft,
+    ArrowRight,
+    Bell,
+    Check,
+    Clock,
+    Globe,
+    HandCoins,
+    MessagesSquare,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import Footer from '../layout/Footer';
 import { FlipMotionButton } from '../ui/Text3DFlip';
 import { fadeUp, staggerContainer } from '../../lib/motion';
-import type { FeatureContent } from '../../lib/featuresContent';
-import { FEATURES } from '../../lib/featuresContent';
+import {
+    FEATURES,
+    FEATURE_BY_SLUG,
+    type FeatureIconName,
+    type FeatureSlug,
+} from '../../lib/featuresContent';
 
-type FeaturePageViewProps = {
-    feature: FeatureContent;
+const FEATURE_ICONS: Record<FeatureIconName, LucideIcon> = {
+    'hand-coins': HandCoins,
+    bell: Bell,
+    globe: Globe,
+    clock: Clock,
+    'messages-square': MessagesSquare,
 };
 
-export default function FeaturePageView({ feature }: FeaturePageViewProps) {
+type FeaturePageViewProps = {
+    slug: FeatureSlug;
+};
+
+export default function FeaturePageView({ slug }: FeaturePageViewProps) {
     const router = useRouter();
-    const Icon = feature.icon;
+    const feature = FEATURE_BY_SLUG[slug];
+    const Icon = FEATURE_ICONS[feature.iconName];
     const otherFeatures = FEATURES.filter((f) => f.slug !== feature.slug);
 
     return (
