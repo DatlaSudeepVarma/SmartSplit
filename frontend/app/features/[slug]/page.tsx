@@ -34,5 +34,5 @@ export default async function FeaturePage({ params }: PageProps) {
         notFound();
     }
 
-    return <FeaturePageView feature={FEATURE_BY_SLUG[slug]} />;
+    return <FeaturePageView slug={slug} />;
 }

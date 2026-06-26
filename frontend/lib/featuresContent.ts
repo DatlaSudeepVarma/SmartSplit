@@ -1,18 +1,16 @@
-import type { LucideIcon } from 'lucide-react';
-import {
-    HandCoins,
-    Bell,
-    Globe,
-    Clock,
-    MessagesSquare,
-} from 'lucide-react';
-
 export type FeatureSlug =
     | 'real-time-settling'
     | 'smart-reminders'
     | 'multi-currency-support'
     | 'activity-timelines'
     | 'group-chats';
+
+export type FeatureIconName =
+    | 'hand-coins'
+    | 'bell'
+    | 'globe'
+    | 'clock'
+    | 'messages-square';
 
 export type FeatureContent = {
     slug: FeatureSlug;
@@ -21,7 +19,7 @@ export type FeatureContent = {
     summary: string;
     whatItMeans: string;
     highlights: string[];
-    icon: LucideIcon;
+    iconName: FeatureIconName;
     ctaHref: string;
     ctaLabel: string;
 };
@@ -41,7 +39,7 @@ export const FEATURES: FeatureContent[] = [
             'Works across trips, activities, and shared bills so pending amounts stay visible on your dashboard.',
             'Record settlement payments to keep the ledger accurate after money changes hands.',
         ],
-        icon: HandCoins,
+        iconName: 'hand-coins',
         ctaHref: '/trips',
         ctaLabel: 'Open trips',
     },
@@ -59,7 +57,7 @@ export const FEATURES: FeatureContent[] = [
             'Track autopay status and monthly totals alongside reminders.',
             'Split recurring costs across roommates so everyone knows their share before the due date.',
         ],
-        icon: Bell,
+        iconName: 'bell',
         ctaHref: '/bills',
         ctaLabel: 'Manage bills',
     },
@@ -77,7 +75,7 @@ export const FEATURES: FeatureContent[] = [
             'Use the navbar currency converter for quick live exchange-rate lookups.',
             'Avoid confusion when travelers pay in different currencies during the same trip.',
         ],
-        icon: Globe,
+        iconName: 'globe',
         ctaHref: '/register',
         ctaLabel: 'Create an account',
     },
@@ -95,7 +93,7 @@ export const FEATURES: FeatureContent[] = [
             'Helpful for reconciling receipts and explaining splits to the group later.',
             'Pairs with analytics charts for both daily trends and category breakdowns.',
         ],
-        icon: Clock,
+        iconName: 'clock',
         ctaHref: '/activities',
         ctaLabel: 'Browse activities',
     },
@@ -113,7 +111,7 @@ export const FEATURES: FeatureContent[] = [
             'Share trip summaries so others can stay informed without full account access.',
             'Keep discussions focused: the ledger shows who paid, who owes, and what changed.',
         ],
-        icon: MessagesSquare,
+        iconName: 'messages-square',
         ctaHref: '/profile',
         ctaLabel: 'Try the AI assistant',
     },
