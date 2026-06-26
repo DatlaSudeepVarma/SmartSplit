@@ -5,8 +5,8 @@ import { useRef } from 'react';
 import { Users, PlusCircle, HandCoins } from 'lucide-react';
 import { fadeUp, staggerContainer, viewportOnce } from '../../lib/motion';
 
-const steps = [
-    {
+const steps = [    
+    {  
         icon: Users,
         step: '01',
         title: 'Start a group or trip',
@@ -80,4 +80,8 @@ export default function LandingHowItWorks() {
             </m.div>
         </section>
     );
+
+
+
+    
 }
