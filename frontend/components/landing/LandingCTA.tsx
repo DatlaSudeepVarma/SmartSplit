@@ -13,6 +13,7 @@ export default function LandingCTA() {
     const inView = useInView(ref, viewportOnce);
 
     return (
+        
         <section ref={ref} className="border-t border-gray-200 bg-white px-4 py-24 dark:border-white/10 dark:bg-[#050505] sm:px-8 sm:py-32">
             <m.div
                 className="mx-auto max-w-4xl overflow-hidden rounded-[2rem] border border-gray-200 bg-gradient-to-br from-gray-50 via-white to-emerald-50/80 p-10 text-center shadow-xl dark:border-white/10 dark:from-[#0a0a0a] dark:via-[#0f1410] dark:to-emerald-950/30 sm:rounded-[2.5rem] sm:p-16"
